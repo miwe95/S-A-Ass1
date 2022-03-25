@@ -1,5 +1,5 @@
 import { Application} from 'pixi.js'
-import { Scene } from './Scene';
+import { GameHandler } from './GameHandler';
 
 export const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
@@ -10,6 +10,6 @@ export const app = new Application({
 	height: innerHeight
 });
 
-const scene: Scene = new Scene(app.screen.width,app.screen.height);
-app.stage.addChild(scene);
+const game_handler: GameHandler = new GameHandler(app.screen.width,app.screen.height);
+app.stage.addChild(game_handler);
 
