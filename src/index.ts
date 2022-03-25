@@ -1,7 +1,7 @@
 import { Application} from 'pixi.js'
 import { Scene } from './Scene';
 
-const app = new Application({
+export const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
 	resolution: window.devicePixelRatio || 1,
 	autoDensity: true,
@@ -10,6 +10,6 @@ const app = new Application({
 	height: innerHeight
 });
 
-const scene: Scene = new Scene(app.screen.width, app.screen.height);
+const scene: Scene = new Scene(app.screen.width,app.screen.height);
 app.stage.addChild(scene);
 
