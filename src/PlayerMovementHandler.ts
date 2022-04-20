@@ -79,7 +79,7 @@ export class PlayerMovementHandler extends Container {
 
     //called when left clicked on slingshot
     private preparePlayer = (_e: InteractionEvent): void => {
-        Ticker.shared.stop();
+        this.ticker.stop();
         this.player.x = this.slingshot.x;
         this.player.y = this.slingshot.y - 50;
         this.player.on("mousemove", this.moveRopeAndPlayer);
