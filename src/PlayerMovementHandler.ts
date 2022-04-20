@@ -6,6 +6,7 @@ export class PlayerMovementHandler extends Container {
     private slingshot_rope_left: Graphics;
     private slingshot_rope_right: Graphics;
     private player: Sprite;
+    private ticker: Ticker;
 
     constructor(_screenWidth: number, screenHeight: number) {
         super();
@@ -36,20 +37,21 @@ export class PlayerMovementHandler extends Container {
         this.slingshot.interactive = true;
         this.addChild(this.slingshot);
         this.slingshot.on("mousedown", this.preparePlayer);
-        Ticker.shared.autoStart = false;
-        Ticker.shared.add(this.update);
+        this.ticker = new Ticker();
+        this.ticker.autoStart = false;
+        this.ticker.add(this.update);
     }
 
     //Called when Ticker starts
     private update = (): void => {
-        this.player.x += 1;
-        this.player.y -= 1;
+        this.player.x += 2;
+        this.player.y -= 2;
     };
 
     //Called when left mousebutton is released
     private firePlayer = (_e: InteractionEvent): void => {
         this.clearListenerPlayerFire(_e);
-        Ticker.shared.start();
+        this.ticker.start();
     }
 
     //called to clear drawings when player fired
