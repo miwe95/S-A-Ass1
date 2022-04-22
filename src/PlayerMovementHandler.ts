@@ -39,7 +39,9 @@ export class PlayerMovementHandler extends Container {
         this.slingshot.on("mousedown", this.preparePlayer);
         this.ticker = new Ticker();
         this.ticker.autoStart = false;
+        this.ticker.maxFPS = 60;
         this.ticker.add(this.update);
+
     }
 
     //Called when Ticker starts
