@@ -22,4 +22,5 @@ export class GameHandler extends Container{
         this.enemy_movement = new EnemyMovementHandler(screenWidth, screenHeight);
         this.addChild(this.enemy_movement);
     }
+    
 }
