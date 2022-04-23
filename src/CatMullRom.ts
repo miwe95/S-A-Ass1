@@ -1,23 +1,16 @@
 import { Container, Graphics, InteractionEvent, Sprite, Ticker } from "pixi.js";
 import { cGraphics } from "./Utils";
 
-export class EnemyMovementHandler extends Container {
+export class CatMullRom extends Container {
     private enemy: Sprite;
     private control_points: cGraphics[];
     private catmull_points: cGraphics[];
     private ticker: Ticker;
     private move_counter: number;
-    private x_coord: number;
-    private y_coord: number;
     private selected_point: Graphics;
-
-
-    //private ticker: Ticker;
 
     constructor(_screenWidth: number, _screenHeight: number) {
         super();
-        this.x_coord = 0;
-        this.y_coord = 0;
         this.move_counter = 0;
         this.selected_point = new Graphics();
 
@@ -66,27 +59,30 @@ export class EnemyMovementHandler extends Container {
     }
 
     private calculateCatMull() {
+        let x_coord = 0;
+        let y_coord = 0;
+        
         for (let i = 0; i <= 1; i += 0.01) {
-            this.x_coord = this.catMullRom(i, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
-            this.y_coord = this.catMullRom(i, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
-            this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
+            x_coord = this.catMullRom(i, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
+            y_coord = this.catMullRom(i, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
+            this.catmull_points.push(new cGraphics(x_coord, y_coord, true));
         }
         for (let i = 0; i <= 1; i += 0.01) {
-            this.x_coord = this.catMullRom(i, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
-            this.y_coord = this.catMullRom(i, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
-            this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
-        }
-
-        for (let i = 0; i <= 1; i += 0.01) {
-            this.x_coord = this.catMullRom(i, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
-            this.y_coord = this.catMullRom(i, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
-            this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
+            x_coord = this.catMullRom(i, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
+            y_coord = this.catMullRom(i, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
+            this.catmull_points.push(new cGraphics(x_coord, y_coord, true));
         }
 
         for (let i = 0; i <= 1; i += 0.01) {
-            this.x_coord = this.catMullRom(i, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
-            this.y_coord = this.catMullRom(i, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
-            this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
+            x_coord = this.catMullRom(i, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
+            y_coord = this.catMullRom(i, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
+            this.catmull_points.push(new cGraphics(x_coord, y_coord, true));
+        }
+
+        for (let i = 0; i <= 1; i += 0.01) {
+            x_coord = this.catMullRom(i, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
+            y_coord = this.catMullRom(i, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
+            this.catmull_points.push(new cGraphics(x_coord, y_coord, true));
         }
 
         for (var graphic of this.catmull_points)
