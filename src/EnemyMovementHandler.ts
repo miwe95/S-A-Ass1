@@ -1,6 +1,5 @@
 import { Container, Graphics, InteractionEvent, Sprite, Ticker } from "pixi.js";
 import { cGraphics } from "./Utils";
-import { app } from "./Index";
 
 export class EnemyMovementHandler extends Container {
     private enemy: Sprite;
@@ -10,7 +9,7 @@ export class EnemyMovementHandler extends Container {
     private move_counter: number;
     private x_coord: number;
     private y_coord: number;
-    private clicked_point: Graphics;
+    private selected_point: Graphics;
 
 
     //private ticker: Ticker;
@@ -20,7 +19,7 @@ export class EnemyMovementHandler extends Container {
         this.x_coord = 0;
         this.y_coord = 0;
         this.move_counter = 0;
-        this.clicked_point = new Graphics();
+        this.selected_point = new Graphics();
 
         this.catmull_points = [];
         this.control_points = [];
@@ -54,36 +53,47 @@ export class EnemyMovementHandler extends Container {
         for (var graphic of this.control_points) {
             graphic.on("mousedown", this.selectPoint);
             graphic.on("mouseup", this.releasePoint);
-            this.drawPoint(graphic, 0xeb4034, 6);
+            this.drawPoint(graphic, 0xeb4034, 9);
+        }
+    }
+
+    private reDrawControlPoints(){
+        for (var graphic of this.control_points) {
+            graphic.removeListener("mousemove");
+            this.removeChild(graphic);
+            this.drawPoint(graphic, 0xeb4034, 9);
         }
     }
 
     private calculateCatMull() {
-        for (let i = 0.02; i <= 0.98; i += 0.01) {
+        for (let i = 0; i <= 1; i += 0.01) {
             this.x_coord = this.catMullRom(i, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
             this.y_coord = this.catMullRom(i, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
             this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
         }
-        for (let i = 0.02; i <= 0.98; i += 0.01) {
+        for (let i = 0; i <= 1; i += 0.01) {
             this.x_coord = this.catMullRom(i, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
             this.y_coord = this.catMullRom(i, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
             this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
         }
 
-        for (let i = 0.02; i <= 0.98; i += 0.01) {
+        for (let i = 0; i <= 1; i += 0.01) {
             this.x_coord = this.catMullRom(i, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
             this.y_coord = this.catMullRom(i, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
             this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
         }
 
-        for (let i = 0.02; i <= 0.98; i += 0.01) {
+        for (let i = 0; i <= 1; i += 0.01) {
             this.x_coord = this.catMullRom(i, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
             this.y_coord = this.catMullRom(i, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
             this.catmull_points.push(new cGraphics(this.x_coord, this.y_coord, true));
         }
 
         for (var graphic of this.catmull_points)
-            this.drawPoint(graphic, 0xe3e1e1, 4);
+        {
+            this.drawPoint(graphic, 0xe3e1e1, 3);
+            graphic.on("mouseup", this.releasePoint);
+        }
     }
 
     private update = (): void => {
@@ -111,34 +121,26 @@ export class EnemyMovementHandler extends Container {
     }
 
     private selectPoint = (_e: InteractionEvent): void => {
-        console.log(_e.target);
-        console.log(app);
-        this.clicked_point = _e.target as Graphics;
-        this.clicked_point.on("mousemove", this.movePoint);
+        this.selected_point = _e.target as Graphics;
+        this.selected_point.on("mousemove", this.movePoint);
+        this.selected_point.on("mouseup", this.releasePoint);
     }
 
     private movePoint = (_e: InteractionEvent): void => {
-
-        console.log("move");
-        if (this.clicked_point) {
-            this.clicked_point.x = _e.data.global.x;
-            this.clicked_point.y = _e.data.global.y;
+        if (this.selected_point) {
+            this.selected_point.x = _e.data.global.x;
+            this.selected_point.y = _e.data.global.y;
             for (var g of this.catmull_points) {
                 this.removeChild(g);
             }
             this.catmull_points = [];
             this.calculateCatMull();
-        }
-        else {
-            for (let c of this.control_points) {
-                c.removeListener("mousemove");
-                this.removeChild(c);
-            }
-            this.calculateControlPoints();
+          
         }
     }
 
     private releasePoint = (_e: InteractionEvent): void => {
-        _e.target.removeListener("mousemove");
+        this.selected_point.removeListener("mousemove");
+        this.reDrawControlPoints();
     }
 }
