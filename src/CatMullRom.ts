@@ -1,27 +1,27 @@
 import { Container, Graphics, InteractionEvent, Sprite, Ticker } from "pixi.js";
 import { cGraphics } from "./Utils";
+import { Vector } from "vector2d";
 
 export class CatMullRom extends Container {
     private enemy: Sprite;
     private control_points: cGraphics[];
     private catmull_points: cGraphics[];
     private ticker: Ticker;
-    private segment_counter: number;
     //@ts-ignore
     private t_finder: number;
     private selected_point: Graphics;
     //private arc_lengths: number[];
-    private lookup_table: Map<number, Map<number, number>>;
+    private lookup_table: Map<number, Vector>;
 
     constructor(_screenWidth: number, _screenHeight: number) {
         super();
-        this.segment_counter = 0;
-        this.t_finder = 0; 
+
+        this.t_finder = 0;
         this.selected_point = new Graphics();
 
         this.catmull_points = [];
         this.control_points = [];
-        this.lookup_table = new Map<number, Map<number, number>>();
+        this.lookup_table = new Map<number, Vector>();
 
         this.control_points.push(new cGraphics(0.1 * _screenWidth, 0.1 * _screenHeight, true));
         this.control_points.push(new cGraphics(0.4 * _screenWidth, 0.3 * _screenHeight, true));
@@ -64,21 +64,21 @@ export class CatMullRom extends Container {
         }
     }
 
-    private normalizeLengths(index: number, chordLength: number){
-        let tmp_t1 : number[];
-        let tmp_dist1 : number[];
-        tmp_t1 = [];
-        tmp_dist1 = [];
-        
-        this.lookup_table.get(index)?.forEach((val, key) =>{
-            tmp_t1.push(val);
-            tmp_dist1.push(key/=chordLength);
+    private normalizeLengths(total_length: number) {
+        let tmp_segment_t: Vector[];
+        let tmp_chord: number[];
+        tmp_segment_t = [];
+        tmp_chord = [];
+
+        this.lookup_table.forEach((val, key) => {
+            tmp_segment_t.push(val);
+            tmp_chord.push(key /= total_length);
         });
 
-        this.lookup_table.get(index)?.clear();
-        for(let i = 0; i < tmp_t1.length;i++){
-            this.lookup_table.get(index)?.set(tmp_dist1[i], tmp_t1[i])
-        }   
+        this.lookup_table.clear();
+        for (let i = 0; i < tmp_chord.length; i++) {
+            this.lookup_table.set(tmp_chord[i], tmp_segment_t[i])
+        }
     }
 
     private calculateCatMull() {
@@ -89,7 +89,7 @@ export class CatMullRom extends Container {
         let counter = 0;
         this.lookup_table.clear();
 
-        this.lookup_table.set(0, new Map<number, number>());
+        //this.lookup_table.set(0, new Map<number, number>());
         for (let i = 0; i <= 1; i += 0.01) {
             x_coord = this.catMullRom(i, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
             y_coord = this.catMullRom(i, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
@@ -103,16 +103,12 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.get(0)?.set(chordLength, i);
-
-
+            this.lookup_table.set(chordLength, new Vector(0, i));
         }
 
-        this.normalizeLengths(0, chordLength);
-    
+
         old = 0;
-        chordLength = 0;
-        this.lookup_table.set(1, new Map<number, number>());
+        //chordLength = 0;
         for (let i = 0; i <= 1; i += 0.01) {
             x_coord = this.catMullRom(i, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
             y_coord = this.catMullRom(i, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
@@ -123,15 +119,13 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.get(1)?.set(chordLength, i);
-           
+            this.lookup_table.set(chordLength, new Vector(1, i));
+
         }
 
-        this.normalizeLengths(1, chordLength);
 
         old = 0;
-        chordLength = 0;
-        this.lookup_table.set(2, new Map<number, number>());
+        //chordLength = 0;
         for (let i = 0; i <= 1; i += 0.01) {
             x_coord = this.catMullRom(i, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
             y_coord = this.catMullRom(i, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
@@ -142,15 +136,14 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.get(2)?.set(chordLength, i);
-         
+            this.lookup_table.set(chordLength, new Vector(2, i));
+
         }
 
-        this.normalizeLengths(2, chordLength);
+
 
         old = 0;
-        chordLength = 0;
-        this.lookup_table.set(3, new Map<number, number>());
+        //chordLength = 0;
         for (let i = 0; i <= 1; i += 0.01) {
             x_coord = this.catMullRom(i, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
             y_coord = this.catMullRom(i, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
@@ -161,65 +154,57 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.get(3)?.set(chordLength, i);
+            this.lookup_table.set(chordLength, new Vector(3, i));
         }
 
-        this.normalizeLengths(3, chordLength);
+        this.normalizeLengths(chordLength);
         console.log(this.lookup_table);
+
         for (var graphic of this.catmull_points) {
             this.drawPoint(graphic, 0xe3e1e1, 3);
             graphic.on("mouseup", this.releasePoint);
         }
     }
 
-    private update = (): void => {
-        // if (this.move_counter >= this.catmull_points.length) {
-        //     this.move_counter = 0;
-        // }
-        // this.enemy.x = this.catmull_points[this.move_counter].x;
-        // this.enemy.y = this.catmull_points[this.move_counter].y;
-        // this.move_counter += 1;
+    private update = (delta: number): void => {
+     
         //@ts-ignore
-        this.t_finder += 0.01;
+        this.t_finder += delta / 200;
+        //console.log(delta);
         let keys: number[];
         keys = [];
         //@ts-ignore
-        this.lookup_table.get(this.segment_counter)?.forEach((val, key) => {
+        this.lookup_table.forEach((val, key) => {
             keys.push(key);
         })
-
         //@ts-ignore
-        const output = keys.reduce((prev, curr) => Math.abs(curr - this.t_finder) < Math.abs(prev - this.t_finder) ? curr : prev); 
+        const output = keys.reduce((prev, curr) => Math.abs(curr - this.t_finder) < Math.abs(prev - this.t_finder) ? curr : prev);
         //console.log(output);
-        let t = this.lookup_table.get(this.segment_counter)?.get(output) as number;
+        let t = this.lookup_table.get(output) as Vector;
 
-        if(this.segment_counter == 0){
-            this.enemy.x = this.catMullRom(t, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
-            this.enemy.y = this.catMullRom(t, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
-        }else if(this.segment_counter == 1)
-        {
-            this.enemy.x = this.catMullRom(t, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
-            this.enemy.y = this.catMullRom(t, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
-        }else if(this.segment_counter == 2)
-        {
-            this.enemy.x = this.catMullRom(t, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
-            this.enemy.y = this.catMullRom(t, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
+
+        if (t.x == 0) {
+            this.enemy.x = this.catMullRom(t.y, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
+            this.enemy.y = this.catMullRom(t.y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
+        } else if (t.x == 1) {
+            this.enemy.x = this.catMullRom(t.y, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
+            this.enemy.y = this.catMullRom(t.y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
+        } else if (t.x == 2) {
+            this.enemy.x = this.catMullRom(t.y, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
+            this.enemy.y = this.catMullRom(t.y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
         }
-        else if (this.segment_counter == 3){
-            this.enemy.x = this.catMullRom(t, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
-            this.enemy.y = this.catMullRom(t, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
+        else if (t.x == 3) {
+            this.enemy.x = this.catMullRom(t.y, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
+            this.enemy.y = this.catMullRom(t.y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
         }
 
-        if(output === 1){
-            this.segment_counter++;
+        if (output == 1) {
             this.t_finder = 0;
         }
 
-        if(this.segment_counter === 4 && output === 1)
-        {
-            this.segment_counter = 0;
-            this.t_finder = 0;
-        }
+
+
+
     };
 
     private catMullRom(t: number, p0: number, p1: number, p2: number, p3: number) {
