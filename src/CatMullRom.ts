@@ -165,7 +165,7 @@ export class CatMullRom extends Container {
 
         let keys: number[];
         keys = [];
-        console.log(_delta);
+       // console.log(_delta);
      
         this.lookup_table.forEach((_val, key) => {
             keys.push(key);
@@ -176,7 +176,7 @@ export class CatMullRom extends Container {
 
         if (t.x == 0) {
             
-            this.delta_t += this.ease(this.speed * this.delta_t / 1000, 0.2, 0.8) / 100;
+            this.delta_t += this.ease(this.speed * this.delta_t / 1000, 0.05, 0.2) / 100;
             output = keys.reduce((prev, curr) => Math.abs(curr - this.delta_t) < Math.abs(prev - this.delta_t) ? curr : prev);
             t = this.lookup_table.get(output) as Vector;
         }
@@ -211,17 +211,17 @@ export class CatMullRom extends Container {
         //console.log("f = " + f);
         if (t < k1) {
             s = k1 * (2 / Math.PI) * (Math.sin((t / k1) * Math.PI / 2 * Math.PI / 2) + 1);
-            //console.log("slow: "+ s/f);
+            console.log("slow: "+ s/f);
         }
         else if (t < k2) {
 
             s = (2 * k1 / Math.PI + t * k1);
-            //console.log("fast: " + s/f);
+            console.log("fast: " + s/f);
         }
         else {
             s = 2 * k1 / Math.PI + k2 * k1 + ((1 - k2) * (2 / Math.PI)) *
                 Math.sin(((t * k2) / (1.0 * k2)) * Math.PI / 2);
-            //console.log("end");
+            console.log("end");
         }
         //console.log("s= " + s);
         //console.log("s / f= " + s/f);
