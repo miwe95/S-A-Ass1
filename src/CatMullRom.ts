@@ -185,7 +185,7 @@ export class CatMullRom extends Container {
 
         if (table_entry.segment == 0) {
 
-            this.distance += this.ease(this.distance, 0.05, 0.15) / 1000;
+            this.distance += this.ease(this.distance, 0.05, 0.15) * this.speed * _delta / 1000 ;
             output = keys.reduce((prev, curr) => Math.abs(curr - this.distance) < Math.abs(prev - this.distance) ? curr : prev);
             table_entry = this.lookup_table.get(output) as TableEntrys;
         }
@@ -220,17 +220,17 @@ export class CatMullRom extends Container {
         //console.log("f = " + f);
         if (t < k1) {
             s = k1 * (2 / Math.PI) * (Math.sin((t / k1) * Math.PI / 2 * Math.PI / 2) + 1);
-            console.log("slow: " + s / f);
+            console.log("slow:");
         }
         else if (t < k2) {
 
             s = (2 * k1 / Math.PI + t * k1);
-            console.log("fast: " + s / f);
+            console.log("fast:" );
         }
         else {
             s = 2 * k1 / Math.PI + k2 * k1 + ((1 - k2) * (2 / Math.PI)) *
                 Math.sin(((t * k2) / (1.0 * k2)) * Math.PI / 2);
-            console.log("end " + s / f);
+            console.log("end ");
         }
         //console.log("s= " + s);
         //console.log("s / f= " + s/f);
