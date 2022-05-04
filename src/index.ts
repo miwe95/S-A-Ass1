@@ -7,9 +7,11 @@ export const app = new Application({
 	autoDensity: true,
 	backgroundColor: 0x6495ed,
 	width: innerWidth,
-	height: innerHeight
+	height: innerHeight,
+	//autoStart: false
 });
 
-const game_handler: GameHandler = new GameHandler(app.screen.width,app.screen.height);
-app.stage.addChild(game_handler);
 
+const game_handler: GameHandler = new GameHandler(app.screen.width,app.screen.height);
+game_handler.startLoops();
+app.stage.addChild(game_handler);

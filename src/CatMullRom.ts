@@ -1,4 +1,4 @@
-import { Container, Graphics, InteractionEvent, Sprite, Ticker } from "pixi.js";
+import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
 import { cGraphics } from "./Utils";
 import { Vector } from "vector2d";
 
@@ -6,18 +6,20 @@ export class CatMullRom extends Container {
     private enemy: Sprite;
     private control_points: cGraphics[];
     private catmull_points: cGraphics[];
-    private ticker: Ticker;
     //@ts-ignore
-    private t_finder: number;
+    private delta_t: number;
     private selected_point: Graphics;
     //private arc_lengths: number[];
     private lookup_table: Map<number, Vector>;
+    private speed: number;
+
 
     constructor(_screenWidth: number, _screenHeight: number) {
         super();
 
-        this.t_finder = 0;
+        this.delta_t = 0;
         this.selected_point = new Graphics();
+        this.speed = 0.1;
 
         this.catmull_points = [];
         this.control_points = [];
@@ -39,13 +41,6 @@ export class CatMullRom extends Container {
         this.enemy.y = this.control_points[0].y;
         this.enemy.interactive = true;
         this.addChild(this.enemy);
-
-        this.ticker = new Ticker();
-        this.ticker.autoStart = false;
-        this.ticker.maxFPS = 60;
-        this.ticker.add(this.update);
-        this.ticker.start();
-
     }
 
     private calculateControlPoints() {
@@ -166,22 +161,29 @@ export class CatMullRom extends Container {
         }
     }
 
-    private update = (delta: number): void => {
-     
-        //@ts-ignore
-        this.t_finder += delta / 200;
-        //console.log(delta);
+    update = (_delta: number): void => {
+
         let keys: number[];
         keys = [];
-        //@ts-ignore
-        this.lookup_table.forEach((val, key) => {
+        console.log(_delta);
+     
+        this.lookup_table.forEach((_val, key) => {
             keys.push(key);
         })
-        //@ts-ignore
-        const output = keys.reduce((prev, curr) => Math.abs(curr - this.t_finder) < Math.abs(prev - this.t_finder) ? curr : prev);
-        //console.log(output);
+
+        let output = keys.reduce((prev, curr) => Math.abs(curr - this.delta_t) < Math.abs(prev - this.delta_t) ? curr : prev);
         let t = this.lookup_table.get(output) as Vector;
 
+        if (t.x == 0) {
+            
+            this.delta_t += this.ease(this.speed * this.delta_t / 1000, 0.2, 0.8) / 100;
+            output = keys.reduce((prev, curr) => Math.abs(curr - this.delta_t) < Math.abs(prev - this.delta_t) ? curr : prev);
+            t = this.lookup_table.get(output) as Vector;
+        }
+        else {
+            this.delta_t += this.speed * _delta / 1000;
+        }
+        //console.log(this.delta_t);
 
         if (t.x == 0) {
             this.enemy.x = this.catMullRom(t.y, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
@@ -199,13 +201,32 @@ export class CatMullRom extends Container {
         }
 
         if (output == 1) {
-            this.t_finder = 0;
+            this.delta_t = 0;
         }
-
-
-
-
     };
+
+    private ease(t: number, k1: number, k2: number) {
+        let f; let s;
+        f = k1 * 2 / Math.PI + k2 * k1 + (1.0 * k2) * 2 / Math.PI;
+        //console.log("f = " + f);
+        if (t < k1) {
+            s = k1 * (2 / Math.PI) * (Math.sin((t / k1) * Math.PI / 2 * Math.PI / 2) + 1);
+            //console.log("slow: "+ s/f);
+        }
+        else if (t < k2) {
+
+            s = (2 * k1 / Math.PI + t * k1);
+            //console.log("fast: " + s/f);
+        }
+        else {
+            s = 2 * k1 / Math.PI + k2 * k1 + ((1 - k2) * (2 / Math.PI)) *
+                Math.sin(((t * k2) / (1.0 * k2)) * Math.PI / 2);
+            //console.log("end");
+        }
+        //console.log("s= " + s);
+        //console.log("s / f= " + s/f);
+        return (s / f);
+    }
 
     private catMullRom(t: number, p0: number, p1: number, p2: number, p3: number) {
         return 0.5 * (
