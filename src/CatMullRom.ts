@@ -1,29 +1,38 @@
 import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
 import { cGraphics } from "./Utils";
-import { Vector } from "vector2d";
+
+class TableEntrys {
+    segment: number;
+    t: number;
+
+    constructor(segment: number, t: number) {
+        this.segment = segment;
+        this.t = t;
+    }
+}
 
 export class CatMullRom extends Container {
     private enemy: Sprite;
     private control_points: cGraphics[];
     private catmull_points: cGraphics[];
     //@ts-ignore
-    private delta_t: number;
+    private distance: number;
     private selected_point: Graphics;
     //private arc_lengths: number[];
-    private lookup_table: Map<number, Vector>;
+    private lookup_table: Map<number, TableEntrys>;
     private speed: number;
 
 
     constructor(_screenWidth: number, _screenHeight: number) {
         super();
 
-        this.delta_t = 0;
+        this.distance = 0;
         this.selected_point = new Graphics();
         this.speed = 0.1;
 
         this.catmull_points = [];
         this.control_points = [];
-        this.lookup_table = new Map<number, Vector>();
+        this.lookup_table = new Map<number, TableEntrys>();
 
         this.control_points.push(new cGraphics(0.1 * _screenWidth, 0.1 * _screenHeight, true));
         this.control_points.push(new cGraphics(0.4 * _screenWidth, 0.3 * _screenHeight, true));
@@ -60,7 +69,7 @@ export class CatMullRom extends Container {
     }
 
     private normalizeLengths(total_length: number) {
-        let tmp_segment_t: Vector[];
+        let tmp_segment_t: TableEntrys[];
         let tmp_chord: number[];
         tmp_segment_t = [];
         tmp_chord = [];
@@ -98,7 +107,7 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.set(chordLength, new Vector(0, i));
+            this.lookup_table.set(chordLength, new TableEntrys(0, i));
         }
 
 
@@ -114,7 +123,7 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.set(chordLength, new Vector(1, i));
+            this.lookup_table.set(chordLength, new TableEntrys(1, i));
 
         }
 
@@ -131,7 +140,7 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.set(chordLength, new Vector(2, i));
+            this.lookup_table.set(chordLength, new TableEntrys(2, i));
 
         }
 
@@ -149,7 +158,7 @@ export class CatMullRom extends Container {
             old = 1;
             counter++;
             chordLength += distance;
-            this.lookup_table.set(chordLength, new Vector(3, i));
+            this.lookup_table.set(chordLength, new TableEntrys(3, i));
         }
 
         this.normalizeLengths(chordLength);
@@ -165,43 +174,43 @@ export class CatMullRom extends Container {
 
         let keys: number[];
         keys = [];
-       // console.log(_delta);
-     
+        // console.log(_delta);
+
         this.lookup_table.forEach((_val, key) => {
             keys.push(key);
         })
 
-        let output = keys.reduce((prev, curr) => Math.abs(curr - this.delta_t) < Math.abs(prev - this.delta_t) ? curr : prev);
-        let t = this.lookup_table.get(output) as Vector;
+        let output = keys.reduce((prev, curr) => Math.abs(curr - this.distance) < Math.abs(prev - this.distance) ? curr : prev);
+        let table_entry = this.lookup_table.get(output) as TableEntrys;
 
-        if (t.x == 0) {
-            
-            this.delta_t += this.ease(this.speed * this.delta_t / 1000, 0.05, 0.2) / 100;
-            output = keys.reduce((prev, curr) => Math.abs(curr - this.delta_t) < Math.abs(prev - this.delta_t) ? curr : prev);
-            t = this.lookup_table.get(output) as Vector;
+        if (table_entry.segment == 0) {
+
+            this.distance += this.ease(this.distance, 0.05, 0.15) / 1000;
+            output = keys.reduce((prev, curr) => Math.abs(curr - this.distance) < Math.abs(prev - this.distance) ? curr : prev);
+            table_entry = this.lookup_table.get(output) as TableEntrys;
         }
         else {
-            this.delta_t += this.speed * _delta / 1000;
+            this.distance += this.speed * _delta / 1000;
         }
         //console.log(this.delta_t);
 
-        if (t.x == 0) {
-            this.enemy.x = this.catMullRom(t.y, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
-            this.enemy.y = this.catMullRom(t.y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
-        } else if (t.x == 1) {
-            this.enemy.x = this.catMullRom(t.y, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
-            this.enemy.y = this.catMullRom(t.y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
-        } else if (t.x == 2) {
-            this.enemy.x = this.catMullRom(t.y, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
-            this.enemy.y = this.catMullRom(t.y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
+        if (table_entry.segment == 0) {
+            this.enemy.x = this.catMullRom(table_entry.t, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x);
+            this.enemy.y = this.catMullRom(table_entry.t, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y);
+        } else if (table_entry.segment == 1) {
+            this.enemy.x = this.catMullRom(table_entry.t, this.control_points[1].x, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x);
+            this.enemy.y = this.catMullRom(table_entry.t, this.control_points[1].y, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y);
+        } else if (table_entry.segment == 2) {
+            this.enemy.x = this.catMullRom(table_entry.t, this.control_points[2].x, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x);
+            this.enemy.y = this.catMullRom(table_entry.t, this.control_points[2].y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y);
         }
-        else if (t.x == 3) {
-            this.enemy.x = this.catMullRom(t.y, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
-            this.enemy.y = this.catMullRom(t.y, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
+        else if (table_entry.segment == 3) {
+            this.enemy.x = this.catMullRom(table_entry.t, this.control_points[3].x, this.control_points[0].x, this.control_points[1].x, this.control_points[2].x);
+            this.enemy.y = this.catMullRom(table_entry.t, this.control_points[3].y, this.control_points[0].y, this.control_points[1].y, this.control_points[2].y);
         }
 
         if (output == 1) {
-            this.delta_t = 0;
+            this.distance = 0;
         }
     };
 
@@ -211,17 +220,17 @@ export class CatMullRom extends Container {
         //console.log("f = " + f);
         if (t < k1) {
             s = k1 * (2 / Math.PI) * (Math.sin((t / k1) * Math.PI / 2 * Math.PI / 2) + 1);
-            console.log("slow: "+ s/f);
+            console.log("slow: " + s / f);
         }
         else if (t < k2) {
 
             s = (2 * k1 / Math.PI + t * k1);
-            console.log("fast: " + s/f);
+            console.log("fast: " + s / f);
         }
         else {
             s = 2 * k1 / Math.PI + k2 * k1 + ((1 - k2) * (2 / Math.PI)) *
                 Math.sin(((t * k2) / (1.0 * k2)) * Math.PI / 2);
-            console.log("end");
+            console.log("end " + s / f);
         }
         //console.log("s= " + s);
         //console.log("s / f= " + s/f);
