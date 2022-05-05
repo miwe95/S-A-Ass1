@@ -48,7 +48,7 @@ export class PlayerMovementHandler extends Container {
     private update = (): void => {
         this.player.x += 2;
         this.player.y -= 2;
-    };
+    }
 
     //Called when left mousebutton is released
     private firePlayer = (_e: InteractionEvent): void => {

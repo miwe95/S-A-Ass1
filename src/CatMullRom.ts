@@ -220,17 +220,17 @@ export class CatMullRom extends Container {
         //console.log("f = " + f);
         if (t < k1) {
             s = k1 * (2 / Math.PI) * (Math.sin((t / k1) * Math.PI / 2 * Math.PI / 2) + 1);
-            console.log("slow:");
+            //console.log("slow:");
         }
         else if (t < k2) {
 
             s = (2 * k1 / Math.PI + t * k1);
-            console.log("fast:" );
+            //console.log("fast:" );S
         }
         else {
             s = 2 * k1 / Math.PI + k2 * k1 + ((1 - k2) * (2 / Math.PI)) *
                 Math.sin(((t * k2) / (1.0 * k2)) * Math.PI / 2);
-            console.log("end ");
+            //console.log("end ");
         }
         //console.log("s= " + s);
         //console.log("s / f= " + s/f);
