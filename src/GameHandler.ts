@@ -4,11 +4,13 @@ import { CatMullRom } from "./CatMullRom";
 import { SceneSetup } from "./SceneSetup";
 //@ts-ignore
 import { app } from "./Index";
+import { RigidBody } from "./rigidbody";
 
 export class GameHandler extends Container {
 
     private player_movement: PlayerMovementHandler;
     private enemy_movement: CatMullRom;
+    private rigid_body: RigidBody;
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
     private animation_ticker: Ticker;
@@ -29,6 +31,9 @@ export class GameHandler extends Container {
 
         this.enemy_movement = new CatMullRom(screenWidth, screenHeight);
         this.addChild(this.enemy_movement);
+
+        this.rigid_body = new RigidBody(screenWidth, screenHeight);
+        this.addChild(this.rigid_body);
 
         this.fps_text = new Text('');
 
