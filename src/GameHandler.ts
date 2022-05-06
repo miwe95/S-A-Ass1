@@ -68,6 +68,7 @@ export class GameHandler extends Container {
     private animationUpdate = (): void => {
         //this.showFrames(this.animation_ticker);
        this.enemy_movement.update(this.animation_ticker.deltaMS);
+       this.rigid_body.update(this.animation_ticker.deltaMS);
     }
 
 

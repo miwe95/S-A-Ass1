@@ -8,7 +8,7 @@ export const app = new Application({
 	backgroundColor: 0x6495ed,
 	width: innerWidth,
 	height: innerHeight,
-	//autoStart: false
+	autoStart: false
 });
 
 
