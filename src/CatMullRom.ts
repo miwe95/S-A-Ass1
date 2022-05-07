@@ -39,7 +39,7 @@ export class CatMullRom extends Container {
         this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.4 * _screenHeight, true));
         this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.25 * _screenHeight, true));
 
-        this.calculateCatMull();
+        this.calculateSamplePoints();
         this.calculateControlPoints();
 
         this.enemy = Sprite.from("enemy.png");
@@ -85,7 +85,7 @@ export class CatMullRom extends Container {
         }
     }
 
-    private calculateCatMull() {
+    private calculateSamplePoints() {
         let x_coord = 0;
         let y_coord = 0;
         let old = 0;
@@ -265,7 +265,7 @@ export class CatMullRom extends Container {
                 this.removeChild(g);
             }
             this.catmull_points = [];
-            this.calculateCatMull();
+            this.calculateSamplePoints();
 
         }
     }
