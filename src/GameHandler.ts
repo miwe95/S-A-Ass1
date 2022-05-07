@@ -5,17 +5,20 @@ import { SceneSetup } from "./SceneSetup";
 //@ts-ignore
 import { app } from "./Index";
 import { RigidBody } from "./rigidbody";
+import { SceneHierarchy } from "./SceneHierarchy";
 
 export class GameHandler extends Container {
 
     private player_movement: PlayerMovementHandler;
     private enemy_movement: CatMullRom;
     private rigid_body: RigidBody;
+    private SceneHierarchy: SceneHierarchy;
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
     private animation_ticker: Ticker;
     // @ts-ignore
     private fps_text: Text;
+
 
     constructor(screenWidth: number, screenHeight: number) {
         super();
@@ -35,8 +38,10 @@ export class GameHandler extends Container {
         this.rigid_body = new RigidBody(screenWidth, screenHeight);
         this.addChild(this.rigid_body);
 
-        this.fps_text = new Text('');
+        this.SceneHierarchy = new SceneHierarchy(screenWidth, screenHeight);
+        this.addChild(this.SceneHierarchy);
 
+        this.fps_text = new Text('');
 
         this.render_ticker.autoStart = false;
         this.render_ticker.maxFPS = 60;
@@ -59,7 +64,7 @@ export class GameHandler extends Container {
         this.animation_ticker.start();
     }
 
-    private renderUpdate = (_delta:number): void => {
+    private renderUpdate = (): void => {
         app.renderer.render(app.stage);
         this.showFPS(this.render_ticker);
         //this.enemy_movement.update(_delta);
