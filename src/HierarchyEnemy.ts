@@ -27,8 +27,8 @@ export class HierarchyEnemy extends Container {
         this.enemy_.scale.set(scale, scale);
         this.enemy_.x = screen_width / 2;
         this.enemy_.y = screen_heigth / 2 + offset;
-        this.enemy_.pivot.set(screen_width / 2, screen_heigth / 2 + offset);
-        //this.enemy_.anchor.set(0.5);
+        //this.enemy_.pivot.set(screen_width / 2, screen_heigth / 2 + offset);
+        this.enemy_.anchor.set(0.5);
         this.addChild(this.enemy_);
     }
 
@@ -37,7 +37,7 @@ export class HierarchyEnemy extends Container {
         mat3.fromRotation(this.rotation_matrix_, this.enemy_.rotation);
         mat3.fromTranslation(this.translation_matrix_, vec2.fromValues(this.enemy_.x, this.enemy_.y));
         if (this.parent_ == null) {
-            this.enemy_.rotation += 1 * dt / 1000;
+            this.enemy_.rotation += 2 * dt / 1000;
             //console.log("rotation is " + this.enemy_.rotation);
             //console.log(this.translation_matrix_);
             let cosinus_ = Math.cos(this.enemy_.rotation);
@@ -47,26 +47,24 @@ export class HierarchyEnemy extends Container {
                 -sinus_, cosinus_, 0,
                 0, 0, 1
             );
-
-            mat3.multiply(this.transformation_matrix_, this.rotation_matrix_, this.translation_matrix_);
-            let temp_vec = vec3.fromValues(0, 0, 1);
-            vec3.transformMat3(temp_vec, temp_vec, this.transformation_matrix_);
-            console.log(temp_vec);
+            this.transformation_matrix_ = this.rotation_matrix_;
+            //mat3.multiply(this.transformation_matrix_, this.translation_matrix_, this.rotation_matrix_);
         }
         else {
             this.translation_matrix_ = mat3.fromValues(
-                1,0,0,
-                0,1,0,
-                this.enemy_.x,this.enemy_.y,1
+                1, 0, 0,
+                0, 1, 0,
+                this.enemy_.x, this.enemy_.y, 1
             );
 
-            mat3.multiply(this.transformation_matrix_, this.rotation_matrix_, this.translation_matrix_);
-            mat3.multiply(this.transformation_matrix_, this.transformation_matrix_, this.parent_!.transformation_matrix_);
+            mat3.multiply(this.transformation_matrix_, this.translation_matrix_, this.rotation_matrix_);
+            mat3.multiply(this.transformation_matrix_, this.parent_!.transformation_matrix_, this.transformation_matrix_);
 
-            let temp_vec = vec3.fromValues(0, 0, 1);
+            let temp_vec = vec3.fromValues(this.parent_.x, this.parent_.y, 1);
             vec3.transformMat3(temp_vec, temp_vec, this.transformation_matrix_);
-            this.enemy_.x += temp_vec[0] * dt / 1000;
-            this.enemy_.y += temp_vec[1] * dt / 1000;
+
+            this.enemy_.x += temp_vec[0] * dt / 10000;
+            this.enemy_.y += temp_vec[1] * dt / 10000;
         }
     }
 }
