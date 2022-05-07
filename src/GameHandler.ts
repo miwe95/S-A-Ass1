@@ -5,14 +5,16 @@ import { SceneSetup } from "./SceneSetup";
 //@ts-ignore
 import { app } from "./Index";
 import { RigidBody } from "./rigidbody";
-import { SceneHierarchy } from "./SceneHierarchy";
+import { HierarchyEnemy } from "./HierarchyEnemy";
 
 export class GameHandler extends Container {
 
     private player_movement: PlayerMovementHandler;
     private enemy_movement: CatMullRom;
     private rigid_body: RigidBody;
-    private SceneHierarchy: SceneHierarchy;
+    private hierarchy_enemy_1: HierarchyEnemy;
+    private hierarchy_enemy_2: HierarchyEnemy;
+    private hierarchy_enemy_3: HierarchyEnemy;
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
     private animation_ticker: Ticker;
@@ -38,8 +40,14 @@ export class GameHandler extends Container {
         this.rigid_body = new RigidBody(screenWidth, screenHeight);
         this.addChild(this.rigid_body);
 
-        this.SceneHierarchy = new SceneHierarchy(screenWidth, screenHeight);
-        this.addChild(this.SceneHierarchy);
+        this.hierarchy_enemy_1 = new HierarchyEnemy(screenWidth, screenHeight, null, 0.3);
+        this.addChild(this.hierarchy_enemy_1);
+
+        this.hierarchy_enemy_2 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_1, 0.2);
+        this.addChild(this.hierarchy_enemy_2);
+
+        this.hierarchy_enemy_3 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_2, 0.1);
+        this.addChild(this.hierarchy_enemy_3);
 
         this.fps_text = new Text('');
 
@@ -74,6 +82,9 @@ export class GameHandler extends Container {
         //this.showFrames(this.animation_ticker);
        this.enemy_movement.update(this.animation_ticker.deltaMS);
        this.rigid_body.update(this.animation_ticker.deltaMS);
+       this.hierarchy_enemy_1.update(this.animation_ticker.deltaMS);
+       //this.hierarchy_enemy_2.update(this.animation_ticker.deltaMS);
+       //this.hierarchy_enemy_3.update(this.animation_ticker.deltaMS);
     }
 
 

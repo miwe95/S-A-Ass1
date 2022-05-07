@@ -7,6 +7,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "gl-matrix": "^3.4.3",
     "pixi.js": "^6.2.2",
     "vector2d": "^3.0.0"
   },
