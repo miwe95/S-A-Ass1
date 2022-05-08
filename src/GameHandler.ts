@@ -43,10 +43,10 @@ export class GameHandler extends Container {
         this.hierarchy_enemy_1 = new HierarchyEnemy(screenWidth, screenHeight, null, 0.1, 0);
         this.addChild(this.hierarchy_enemy_1);
 
-        this.hierarchy_enemy_2 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_1, 0.1, 0);
+        this.hierarchy_enemy_2 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_1, 0.1, -50);
         this.addChild(this.hierarchy_enemy_2);
 
-        this.hierarchy_enemy_3 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_2, 0.1, 0);
+        this.hierarchy_enemy_3 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_2, 0.1, -100);
         this.addChild(this.hierarchy_enemy_3);
 
         this.fps_text = new Text('');
