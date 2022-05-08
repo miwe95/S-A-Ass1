@@ -14,7 +14,7 @@ export class GameHandler extends Container {
     private rigid_body: RigidBody;
     private hierarchy_enemy_1: HierarchyEnemy;
     private hierarchy_enemy_2: HierarchyEnemy;
-    // private hierarchy_enemy_3: HierarchyEnemy;
+    private hierarchy_enemy_3: HierarchyEnemy;
     // private hierarchy_enemy_4: HierarchyEnemy;
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
@@ -44,11 +44,11 @@ export class GameHandler extends Container {
         this.hierarchy_enemy_1 = new HierarchyEnemy(screenWidth, screenHeight, null, 0.1, 0, "root");
         this.addChild(this.hierarchy_enemy_1);
 
-        this.hierarchy_enemy_2 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_1, 0.1, -50, "child1");
+        this.hierarchy_enemy_2 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_1, 0.1, 50, "child1");
         this.addChild(this.hierarchy_enemy_2);
 
-        // this.hierarchy_enemy_3 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_2, 0.1, -100);
-        // this.addChild(this.hierarchy_enemy_3);
+        this.hierarchy_enemy_3 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_2, 0.1, 100, "child2");
+        this.addChild(this.hierarchy_enemy_3);
 
         // this.hierarchy_enemy_4 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_3, 0.1, -150);
         // this.addChild(this.hierarchy_enemy_4);
@@ -88,7 +88,7 @@ export class GameHandler extends Container {
        this.rigid_body.update(this.animation_ticker.deltaMS);
        this.hierarchy_enemy_1.update(this.animation_ticker.deltaMS);
        this.hierarchy_enemy_2.update(this.animation_ticker.deltaMS);
-       //this.hierarchy_enemy_3.update(this.animation_ticker.deltaMS);
+       this.hierarchy_enemy_3.update(this.animation_ticker.deltaMS);
        //this.hierarchy_enemy_4.update(this.animation_ticker.deltaMS);
     }
 
