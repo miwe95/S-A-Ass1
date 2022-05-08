@@ -30,7 +30,7 @@ export class HierarchyEnemy extends Container {
        
         this.enemy_.anchor.set(0.5);
         this.enemy_.pivot.set(this.enemy_.width / 2, this.enemy_.height / 2);
-       
+        
         this.addChild(this.enemy_);
     }
 
@@ -56,8 +56,10 @@ export class HierarchyEnemy extends Container {
             this.translation_matrix_ = mat3.fromValues(
                 1, 0, 0,
                 0, 1, 0,
-                this.enemy_.x, this.enemy_.y, 1
+                this.enemy_.localTransform.tx, this.enemy_.localTransform.ty, 1
             );
+            //this.enemy_.localTransform.tx+=100;
+            //this.enemy_.localTransform.ty+=100;
 
             mat3.multiply(this.transformation_matrix_, this.translation_matrix_, this.rotation_matrix_);
             mat3.multiply(this.transformation_matrix_, this.parent_!.transformation_matrix_, this.transformation_matrix_);
@@ -65,8 +67,9 @@ export class HierarchyEnemy extends Container {
             let temp_vec = vec3.fromValues(this.parent_.x, this.parent_.y, 1);
             vec3.transformMat3(temp_vec, temp_vec, this.transformation_matrix_);
 
-            this.enemy_.x += temp_vec[0] * 2 * dt / 10000;
-            this.enemy_.y += temp_vec[1] * 2 * dt / 10000;
+            this.enemy_.x += temp_vec[0] * 0.2 * dt / 1000;
+            this.enemy_.y += temp_vec[1] * 0.2 * dt / 1000;
+            //this.enemy_.rotation += 2 * dt / 1000;
         }
     }
 }

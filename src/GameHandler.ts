@@ -15,6 +15,7 @@ export class GameHandler extends Container {
     private hierarchy_enemy_1: HierarchyEnemy;
     private hierarchy_enemy_2: HierarchyEnemy;
     private hierarchy_enemy_3: HierarchyEnemy;
+    private hierarchy_enemy_4: HierarchyEnemy;
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
     private animation_ticker: Ticker;
@@ -48,6 +49,9 @@ export class GameHandler extends Container {
 
         this.hierarchy_enemy_3 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_2, 0.1, -100);
         this.addChild(this.hierarchy_enemy_3);
+
+        this.hierarchy_enemy_4 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_3, 0.1, -150);
+        this.addChild(this.hierarchy_enemy_4);
 
         this.fps_text = new Text('');
 
@@ -85,6 +89,7 @@ export class GameHandler extends Container {
        this.hierarchy_enemy_1.update(this.animation_ticker.deltaMS);
        this.hierarchy_enemy_2.update(this.animation_ticker.deltaMS);
        this.hierarchy_enemy_3.update(this.animation_ticker.deltaMS);
+       this.hierarchy_enemy_4.update(this.animation_ticker.deltaMS);
     }
 
 
