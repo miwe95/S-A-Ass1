@@ -53,20 +53,16 @@ export class HierarchyEnemy extends Container {
             console.log("child1 transformation matrix " + this.transformation_matrix_);
             let vec_ = new Matrix([[0,0,1]]);
             vec_ = vec_.mmul(this.transformation_matrix_);
-            this.sprite_.x = vec_.get(0,0) + this.screen_height_ /2+ 100;
-            this.sprite_.y = vec_.get(0,1) + this.screen_width_ / 2 -100;
+            this.sprite_.x = vec_.get(0,0);
+            this.sprite_.y = vec_.get(0,1);
             //this.point_.drawCircle(this.sprite_.x, this.sprite_.y, 1);
             console.log("child1 vec0 and vec1: " + vec_.get(0,0) + " " + vec_.get(0,1));
         }
 
         else {
             if (position != null) {
-                this.tmp_matrix = new Matrix([[1, 0, 0],[0, 1, 0],[100, 100, 1]]);
-                //console.log("root tmp " +    this.tmp_matrix);
-                //console.log("root rot" + this.rotation_matrix_);
+                this.tmp_matrix = new Matrix([[1, 0, 0],[0, 1, 0],[this.screen_width_/2, this.screen_height_/2, 1]]);
                 this.transformation_matrix_ = this.tmp_matrix.mmul(this.rotation_matrix_);
-                //console.log("root transformation matrix" + this.transformation_matrix_);
-                //mat3.multiply(this.transformation_matrix_, this.translation_matrix_, this.rotation_matrix_ );
             }
         }
 

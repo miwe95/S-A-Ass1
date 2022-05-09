@@ -23,7 +23,7 @@ export class SceneHierarchy extends Container{
         this.addChild(this.child2_);
         this.addChild(this.child3_);
         this.addChild(this.root_);
-        this.rotation_speed_ = 0.78539816339745;
+        this.rotation_speed_ = 0.8;
         this.rotation_angle_ = 0;
         this.count_ = 0;
     }
@@ -39,7 +39,7 @@ export class SceneHierarchy extends Container{
             this.root_.updateMatrix(this.rotation_angle_, new Matrix([]), null);
             this.child1_.updateMatrix(this.rotation_angle_ , null, this.root_.transformation_matrix_);
             this.child2_.updateMatrix(this.rotation_angle_, null, this.child1_.transformation_matrix_); 
-            this.child3_.updateMatrix(this.rotation_angle_ * 1.5, null, this.child2_.transformation_matrix_); 
+            this.child3_.updateMatrix(this.rotation_angle_, null, this.child2_.transformation_matrix_); 
             this.count_ = 1;
         }
     }
