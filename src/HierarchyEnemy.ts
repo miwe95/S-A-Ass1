@@ -44,7 +44,7 @@ export class HierarchyEnemy extends Container {
         let cos = Math.cos(angle);
         let sin = Math.sin(angle);
         this.rotation_matrix_ = new Matrix([[cos, sin, 0],[-sin, cos, 0],[0,0,1]]);
-        this.sprite_.rotation += angle;
+        this.sprite_.rotation += 0.007;
         if (parent_transformation_matrix != null) {
             console.log("child1 parents trans mat" + parent_transformation_matrix);
             this.local_transformation_matrix = this.translation_matrix_.mmul(this.rotation_matrix_);
@@ -53,8 +53,8 @@ export class HierarchyEnemy extends Container {
             console.log("child1 transformation matrix " + this.transformation_matrix_);
             let vec_ = new Matrix([[0,0,1]]);
             vec_ = vec_.mmul(this.transformation_matrix_);
-            this.sprite_.x = vec_.get(0,0) + this.screen_height_ /2;
-            this.sprite_.y = vec_.get(0,1) + this.screen_width_ / 2;
+            this.sprite_.x = vec_.get(0,0) + this.screen_height_ /2+ 100;
+            this.sprite_.y = vec_.get(0,1) + this.screen_width_ / 2 -100;
             //this.point_.drawCircle(this.sprite_.x, this.sprite_.y, 1);
             console.log("child1 vec0 and vec1: " + vec_.get(0,0) + " " + vec_.get(0,1));
         }
