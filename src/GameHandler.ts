@@ -5,22 +5,20 @@ import { SceneSetup } from "./SceneSetup";
 //@ts-ignore
 import { app } from "./Index";
 import { RigidBody } from "./rigidbody";
-import { HierarchyEnemy } from "./HierarchyEnemy";
+import { SceneHierarchy } from "./SceneHierarchy";
 
 export class GameHandler extends Container {
 
     private player_movement: PlayerMovementHandler;
-    private enemy_movement: CatMullRom;
-    private rigid_body: RigidBody;
-    private hierarchy_enemy_1: HierarchyEnemy;
-    private hierarchy_enemy_2: HierarchyEnemy;
-    private hierarchy_enemy_3: HierarchyEnemy;
-    // private hierarchy_enemy_4: HierarchyEnemy;
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
     private animation_ticker: Ticker;
-    // @ts-ignore
     private fps_text: Text;
+
+    private enemy_movement: CatMullRom;
+    private rigid_body: RigidBody;
+    private scene_hierarchy: SceneHierarchy;
+ 
 
 
     constructor(screenWidth: number, screenHeight: number) {
@@ -41,17 +39,8 @@ export class GameHandler extends Container {
         this.rigid_body = new RigidBody(screenWidth, screenHeight);
         this.addChild(this.rigid_body);
 
-        this.hierarchy_enemy_1 = new HierarchyEnemy(screenWidth, screenHeight, null, 0.1, 0, "root");
-        this.addChild(this.hierarchy_enemy_1);
-
-        this.hierarchy_enemy_2 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_1, 0.1, 50, "child1");
-        this.addChild(this.hierarchy_enemy_2);
-
-        this.hierarchy_enemy_3 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_2, 0.1, 100, "child2");
-        this.addChild(this.hierarchy_enemy_3);
-
-        // this.hierarchy_enemy_4 = new HierarchyEnemy(screenWidth, screenHeight, this.hierarchy_enemy_3, 0.1, -150);
-        // this.addChild(this.hierarchy_enemy_4);
+        this.scene_hierarchy = new SceneHierarchy(screenWidth, screenHeight);
+        this.addChild(this.scene_hierarchy);
 
         this.fps_text = new Text('');
 
@@ -79,17 +68,13 @@ export class GameHandler extends Container {
     private renderUpdate = (): void => {
         app.renderer.render(app.stage);
         this.showFPS(this.render_ticker);
-        //this.enemy_movement.update(_delta);
     }
-    //@ts-ignore
+
     private animationUpdate = (): void => {
         //this.showFrames(this.animation_ticker);
        this.enemy_movement.update(this.animation_ticker.deltaMS);
        this.rigid_body.update(this.animation_ticker.deltaMS);
-       this.hierarchy_enemy_1.update(this.animation_ticker.deltaMS);
-       this.hierarchy_enemy_2.update(this.animation_ticker.deltaMS);
-       this.hierarchy_enemy_3.update(this.animation_ticker.deltaMS);
-       //this.hierarchy_enemy_4.update(this.animation_ticker.deltaMS);
+       this.scene_hierarchy.update(this.animation_ticker.deltaMS);
     }
 
 

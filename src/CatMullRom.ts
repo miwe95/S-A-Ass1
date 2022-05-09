@@ -162,7 +162,7 @@ export class CatMullRom extends Container {
         }
 
         this.normalizeLengths(chordLength);
-        console.log(this.lookup_table);
+        //  console.log(this.lookup_table);
 
         for (var graphic of this.catmull_points) {
             this.drawPoint(graphic, 0xe3e1e1, 3);

@@ -44,7 +44,7 @@ export class RigidBody extends Container {
     }
 
     addForce = (force: Vector): void => {
-        console.log("press");
+       // console.log("press");
         this.linear_velocity.x += force.x / this.mass;
         this.linear_velocity.y += force.y / this.mass;
     }
