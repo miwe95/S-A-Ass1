@@ -35,9 +35,9 @@ export class CatMullRom extends Container {
         this.lookup_table = new Map<number, TableEntrys>();
 
         this.control_points.push(new cGraphics(0.1 * _screenWidth, 0.1 * _screenHeight, true));
-        this.control_points.push(new cGraphics(0.4 * _screenWidth, 0.3 * _screenHeight, true));
-        this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.4 * _screenHeight, true));
-        this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.25 * _screenHeight, true));
+        this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.1 * _screenHeight, true));
+        this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.2 * _screenHeight, true));
+        this.control_points.push(new cGraphics(0.1 * _screenWidth, 0.2 * _screenHeight, true));
 
         this.calculateSamplePoints();
         this.calculateControlPoints();
