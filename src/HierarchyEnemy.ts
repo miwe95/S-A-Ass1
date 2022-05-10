@@ -7,6 +7,7 @@ export class HierarchyEnemy extends Container {
     sprite_: Sprite;
     transformation_matrix_: mat3;
     local_transformation_matrix: mat3;
+    rotation_matrix: mat3;
     child_: HierarchyEnemy | null;
     point_: Graphics;
     screen_width_: number;
@@ -17,6 +18,7 @@ export class HierarchyEnemy extends Container {
 
         this.transformation_matrix_ = mat3.create();
         this.local_transformation_matrix = mat3.create();
+        this.rotation_matrix = mat3.fromValues(Math.cos(0.005), Math.sin(0.005), 0, -Math.sin(0.005), Math.cos(0.005), 0, 0, 0, 1);
         this.child_ = child;
         this.screen_width_ = screen_width;
         this.screen_height_ = screen_heigth;
