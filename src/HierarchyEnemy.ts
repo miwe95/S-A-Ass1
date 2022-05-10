@@ -1,15 +1,12 @@
 import { Container, Graphics, Sprite } from "pixi.js";
 //import { mat3, vec2, vec3 } from "gl-matrix";
-import { Matrix } from 'ml-matrix';
+import { mat3 } from "gl-matrix";
 
 export class HierarchyEnemy extends Container {
 
     sprite_: Sprite;
-    rotation_matrix_: Matrix;
-    translation_matrix_: Matrix;
-    transformation_matrix_: Matrix;
-    local_transformation_matrix: Matrix;
-    tmp_matrix: Matrix;
+    transformation_matrix_: mat3;
+    local_transformation_matrix: mat3;
     child_: HierarchyEnemy | null;
     point_: Graphics;
     screen_width_: number;
@@ -18,12 +15,8 @@ export class HierarchyEnemy extends Container {
     constructor(screen_width: number, screen_heigth: number, scale: number, png: string, child: HierarchyEnemy | null) {
         super();
 
-        this.rotation_matrix_ = Matrix.eye(3,3);
-        this.translation_matrix_ = Matrix.eye(3,3);
-        this.transformation_matrix_ = Matrix.eye(3,3);
-        this.local_transformation_matrix = Matrix.eye(3,3);
-        this.tmp_matrix = Matrix.eye(3,3);
-        this.tmp_matrix = Matrix.eye(3,3);
+        this.transformation_matrix_ = mat3.create();
+        this.local_transformation_matrix = mat3.create();
         this.child_ = child;
         this.screen_width_ = screen_width;
         this.screen_height_ = screen_heigth;
@@ -40,35 +33,8 @@ export class HierarchyEnemy extends Container {
         this.addChild(this.point_);
     }
 
+    //@ts-ignore
     updateMatrix(angle: number, position: Matrix | null, parent_transformation_matrix: Matrix | null) {
-        let cos = Math.cos(angle);
-        let sin = Math.sin(angle);
-        this.rotation_matrix_ = new Matrix([[cos, sin, 0],[-sin, cos, 0],[0,0,1]]);
-        this.sprite_.rotation += 0.007;
-        if (parent_transformation_matrix != null) {
-            console.log("child1 parents trans mat" + parent_transformation_matrix);
-            this.local_transformation_matrix = this.translation_matrix_.mmul(this.rotation_matrix_);
-            this.transformation_matrix_ = parent_transformation_matrix.mmul(this.local_transformation_matrix);
-            //console.log(this.transformation_matrix_);
-            console.log("child1 transformation matrix " + this.transformation_matrix_);
-            let vec_ = new Matrix([[0,0,1]]);
-            vec_ = vec_.mmul(this.transformation_matrix_);
-            this.sprite_.x = vec_.get(0,0);
-            this.sprite_.y = vec_.get(0,1);
-            //this.point_.drawCircle(this.sprite_.x, this.sprite_.y, 1);
-            console.log("child1 vec0 and vec1: " + vec_.get(0,0) + " " + vec_.get(0,1));
-        }
-
-        else {
-            if (position != null) {
-                this.tmp_matrix = new Matrix([[1, 0, 0],[0, 1, 0],[this.screen_width_/2, this.screen_height_/2, 1]]);
-                this.transformation_matrix_ = this.tmp_matrix.mmul(this.rotation_matrix_);
-            }
-        }
-
-
-
-
         //console.log("root rotation matrix: " + this.rotation_matrix_);
     }
 }

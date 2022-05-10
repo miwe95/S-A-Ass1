@@ -22,8 +22,7 @@ export class GameHandler extends Container {
 
 
     constructor(screenWidth: number, screenHeight: number) {
-        super();
-
+        super();    
         this.render_ticker = new Ticker();
         this.animation_ticker = new Ticker();
 
