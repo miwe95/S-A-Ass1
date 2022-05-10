@@ -15,8 +15,12 @@ export class SceneHierarchy extends Container {
     screen_width: number;
     screen_height: number;
 
+
     constructor(screen_width: number, screen_height: number) {
         super();
+
+
+
         this.screen_width = screen_width;
         this.screen_height = screen_height;
         this.child3_ = new HierarchyEnemy(screen_width, screen_height, 0.02, "enemy.png", null);
@@ -27,6 +31,8 @@ export class SceneHierarchy extends Container {
         this.addChild(this.child2_);
         this.addChild(this.child3_);
         this.addChild(this.root_);
+
+
 
         this.rotation_speed_ = 0.7;
         this.rotation_angle_ = 0;
@@ -46,14 +52,14 @@ export class SceneHierarchy extends Container {
             mat3.multiply(parent_transformation, parent_transformation, this.child1_.local_transformation_matrix);
     
             this.child1_.sprite_.rotation = this.rotation_angle_;
-            let pos = vec3.fromValues(100, 100, 1);
+            let pos = vec3.fromValues(200, 200, 1);
             vec3.transformMat3(pos, pos, parent_transformation);
     
             this.child1_.sprite_.x = pos[0];
             this.child1_.sprite_.y = pos[1];
 
 
-        
+
             let parent_transformation2 = mat3.fromValues(1, 0, 0, 0, 1, 0, this.child1_.sprite_.x, this.child1_.sprite_.y, 1);
 
     
@@ -74,6 +80,29 @@ export class SceneHierarchy extends Container {
     
             this.child2_.sprite_.x = pos1[0];
             this.child2_.sprite_.y = pos1[1];
+
+            let parent_transformation3 = mat3.fromValues(1, 0, 0, 0, 1, 0, this.child1_.sprite_.x, this.child1_.sprite_.y, 1);
+
+    
+            mat3.multiply(this.child2_.local_transformation_matrix, this.child2_.rotation_matrix ,this.child2_.local_transformation_matrix);
+
+            mat3.invert(this.child2_.local_transformation_matrix ,this.child2_.local_transformation_matrix );
+    
+            mat3.multiply(parent_transformation3, parent_transformation3, this.child2_.local_transformation_matrix);
+  
+            //mat3.invert(parent_transformation2 ,parent_transformation2 );
+            this.child2_.sprite_.rotation = this.rotation_angle_;
+
+            mat3.invert(this.child2_.rotation_matrix ,this.child2_.rotation_matrix );
+
+    
+            let pos2 = vec3.fromValues(100, 100, 1);
+            vec3.transformMat3(pos2, pos2, parent_transformation3);
+    
+            this.child2_.sprite_.x = pos2[0];
+            this.child2_.sprite_.y = pos2[1];
+
+
 
     }
 }
