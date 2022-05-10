@@ -13,7 +13,8 @@ export class GameHandler extends Container {
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
     private animation_ticker: Ticker;
-    private fps_text: Text;
+    private fps_render_text: Text;
+    private fps_animation_text: Text;
 
     private enemy_movement: CatMullRom;
     private rigid_body: RigidBody;
@@ -41,20 +42,31 @@ export class GameHandler extends Container {
         this.scene_hierarchy = new SceneHierarchy(screenWidth, screenHeight);
         this.addChild(this.scene_hierarchy);
 
-        this.fps_text = new Text('');
+        this.fps_render_text = new Text('');
+        this.fps_animation_text = new Text('');
 
         this.render_ticker.autoStart = false;
         this.render_ticker.maxFPS = 60;
         this.animation_ticker.autoStart = false;
     }
 
-    private showFPS(ticker: Ticker) {
+    private showRenderFPS(ticker: Ticker, ) {
         //console.log(this.ticker.deltaMS);
         //console.log("delta_time" + this.ticker.deltaTime);
         //console.log("delta: " + _delta);
-        this.removeChild(this.fps_text);
-        this.fps_text = new Text("FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
-        this.addChild(this.fps_text);
+        this.removeChild(this.fps_render_text);
+        this.fps_render_text = new Text("Render FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'});
+        this.addChild(this.fps_render_text)
+    }
+
+    private showAnimationFPS(ticker: Ticker, ) {
+        //console.log(this.ticker.deltaMS);
+        //console.log("delta_time" + this.ticker.deltaTime);
+        //console.log("delta: " + _delta);
+        this.removeChild(this.fps_animation_text);
+        this.fps_animation_text = new Text("Animation FPS: " + Math.round(ticker.FPS).toString(),  { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'});
+        this.fps_animation_text.transform.position.set(200, 0);
+        this.addChild(this.fps_animation_text);
     }
 
     startLoops() {
@@ -66,11 +78,11 @@ export class GameHandler extends Container {
 
     private renderUpdate = (): void => {
         app.renderer.render(app.stage);
-        this.showFPS(this.render_ticker);
+        this.showRenderFPS(this.render_ticker);
     }
 
     private animationUpdate = (): void => {
-        //this.showFrames(this.animation_ticker);
+       this.showAnimationFPS(this.animation_ticker);
        this.enemy_movement.update(this.animation_ticker.deltaMS);
        this.rigid_body.update(this.animation_ticker.deltaMS);
        this.scene_hierarchy.update(this.animation_ticker.deltaMS);

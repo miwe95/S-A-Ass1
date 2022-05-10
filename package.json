@@ -10,6 +10,8 @@
     "gl-matrix": "^3.4.3",
     "ml-matrix": "^6.10.0",
     "pixi.js": "^6.2.2",
+    "pixi.js-keyboard": "^1.1.6",
+    "pixi.js-mouse": "^1.1.6",
     "vector2d": "^3.0.0"
   },
   "devDependencies": {
