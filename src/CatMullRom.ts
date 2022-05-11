@@ -1,3 +1,4 @@
+import { vec2 } from "gl-matrix";
 import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
 import { cGraphics } from "./Utils";
 
@@ -23,7 +24,7 @@ export class CatMullRom extends Container {
     private speed: number;
 
 
-    constructor(_screenWidth: number, _screenHeight: number) {
+    constructor(_screenWidth: number, _screenHeight: number, control_points_position: vec2[], png: string) {
         super();
 
         this.distance = 0;
@@ -34,15 +35,19 @@ export class CatMullRom extends Container {
         this.control_points = [];
         this.lookup_table = new Map<number, TableEntrys>();
 
-        this.control_points.push(new cGraphics(0.1 * _screenWidth, 0.1 * _screenHeight, true));
-        this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.1 * _screenHeight, true));
-        this.control_points.push(new cGraphics(0.2 * _screenWidth, 0.2 * _screenHeight, true));
-        this.control_points.push(new cGraphics(0.1 * _screenWidth, 0.2 * _screenHeight, true));
+        //01,01
+        //02,01
+        //02,02
+        //01,02
+        this.control_points.push(new cGraphics(control_points_position[0][0] * _screenWidth, control_points_position[0][1] * _screenHeight, true));
+        this.control_points.push(new cGraphics(control_points_position[1][0] * _screenWidth, control_points_position[1][1] * _screenHeight, true));
+        this.control_points.push(new cGraphics(control_points_position[2][0] * _screenWidth, control_points_position[2][1] * _screenHeight, true));
+        this.control_points.push(new cGraphics(control_points_position[3][0] * _screenWidth, control_points_position[3][1] * _screenHeight, true));
 
         this.calculateSamplePoints();
         this.calculateControlPoints();
 
-        this.enemy = Sprite.from("enemy.png");
+        this.enemy = Sprite.from(png);
         this.enemy.anchor.set(0.6);
         this.enemy.scale.x = 0.15;
         this.enemy.scale.y = 0.15;

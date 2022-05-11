@@ -6,6 +6,7 @@ import { SceneSetup } from "./SceneSetup";
 import { app } from "./Index";
 import { RigidBody } from "./rigidbody";
 import { SceneHierarchy } from "./SceneHierarchy";
+import { vec2 } from "gl-matrix";
 
 export class GameHandler extends Container {
 
@@ -16,7 +17,8 @@ export class GameHandler extends Container {
     private fps_render_text: Text;
     private fps_animation_text: Text;
 
-    private enemy_movement: CatMullRom;
+    private enemy_movement_1: CatMullRom;
+    private enemy_movement_2: CatMullRom;
     private rigid_body: RigidBody;
     private scene_hierarchy: SceneHierarchy;
  
@@ -32,9 +34,15 @@ export class GameHandler extends Container {
 
         this.player_movement = new PlayerMovementHandler(screenWidth, screenHeight);
         this.addChild(this.player_movement);
+        //01,01
+        //02,01
+        //02,02
+        //01,02
+        this.enemy_movement_1 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.1,0.1), vec2.fromValues(0.2,0.1), vec2.fromValues(0.2,0.2), vec2.fromValues(0.1,0.2)], "enemy.png");
+        this.addChild(this.enemy_movement_1);
 
-        this.enemy_movement = new CatMullRom(screenWidth, screenHeight);
-        this.addChild(this.enemy_movement);
+        this.enemy_movement_2 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.7,0.7), vec2.fromValues(0.8,0.7    ), vec2.fromValues(0.8,0.8), vec2.fromValues(0.7,0.8)], "tetanus.png");
+        this.addChild(this.enemy_movement_2);
 
         this.rigid_body = new RigidBody(screenWidth, screenHeight);
         this.addChild(this.rigid_body);
@@ -83,8 +91,9 @@ export class GameHandler extends Container {
 
     private animationUpdate = (): void => {
        this.showAnimationFPS(this.animation_ticker);
-       this.enemy_movement.update(this.animation_ticker.deltaMS);
-       this.rigid_body.update(this.animation_ticker.deltaMS);
+       this.enemy_movement_1.update(this.animation_ticker.deltaMS);
+       this.enemy_movement_2.update(this.animation_ticker.deltaMS);
+       //this.rigid_body.update(this.animation_ticker.deltaMS);
        this.scene_hierarchy.update(this.animation_ticker.deltaMS);
     }
 

@@ -26,7 +26,7 @@ export class RigidBody extends Container {
         this.rb_object.scale.x = 0.3;
         this.rb_object.scale.y = 0.3;
         this.rb_object.x = 0.25 * screenWidth;
-        this.rb_object.y = 0.75 * screenHeight;
+        this.rb_object.y = 0.95 * screenHeight;
         this.rb_object.interactive = true;
         this.mass = 0.5;
         this.linear_velocity = new Vector(0, 0);
