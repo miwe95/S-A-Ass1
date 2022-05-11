@@ -47,9 +47,11 @@ export class HierarchyEnemy extends Container {
         
         let pos = vec3.fromValues(0, 0, 1);
         vec3.transformMat3(pos, pos, this.global_transformation_matrix_);
-        this.sprite_.x = pos[0] + this.screen_width_ /2;
-        this.sprite_.y = pos[1] + this.screen_height_ /2;
-        
+        if(parent_angle != 0)
+        {
+            this.sprite_.x = pos[0] + this.screen_width_ /2;
+            this.sprite_.y = pos[1] + this.screen_height_ /2;
+        }
         this.sprite_.rotation = parent_angle + angle;
     }
 }
