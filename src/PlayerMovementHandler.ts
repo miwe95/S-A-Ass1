@@ -1,4 +1,5 @@
-import { Container, Graphics, InteractionEvent, Sprite, Ticker } from "pixi.js";
+import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
+import { RigidBody } from "./rigidbody";
 
 
 export class PlayerMovementHandler extends Container {
@@ -6,7 +7,7 @@ export class PlayerMovementHandler extends Container {
     private slingshot_rope_left: Graphics;
     private slingshot_rope_right: Graphics;
     private player: Sprite;
-    private ticker: Ticker;
+    private rigid_body: RigidBody;
 
     constructor(_screenWidth: number, screenHeight: number) {
         super();
@@ -37,23 +38,19 @@ export class PlayerMovementHandler extends Container {
         this.slingshot.interactive = true;
         this.addChild(this.slingshot);
         this.slingshot.on("mousedown", this.preparePlayer);
-        this.ticker = new Ticker();
-        this.ticker.autoStart = false;
-        this.ticker.maxFPS = 60;
-        this.ticker.add(this.update);
+        this.rigid_body= new RigidBody(_screenWidth,screenHeight,this.player);
 
     }
 
     //Called when Ticker starts
-    private update = (): void => {
-        this.player.x += 2;
-        this.player.y -= 2;
+    update = (dt: number): void => {
+        this.rigid_body.move(dt);
     }
 
     //Called when left mousebutton is released
     private firePlayer = (_e: InteractionEvent): void => {
         this.clearListenerPlayerFire(_e);
-        this.ticker.start();
+        this.rigid_body.move_ = true;
     }
 
     //called to clear drawings when player fired
@@ -81,7 +78,7 @@ export class PlayerMovementHandler extends Container {
 
     //called when left clicked on slingshot
     private preparePlayer = (_e: InteractionEvent): void => {
-        this.ticker.stop();
+        this.rigid_body.move_ = false;
         this.player.x = this.slingshot.x;
         this.player.y = this.slingshot.y - 50;
         this.player.on("mousemove", this.moveRopeAndPlayer);

@@ -4,7 +4,6 @@ import { CatMullRom } from "./CatMullRom";
 import { SceneSetup } from "./SceneSetup";
 //@ts-ignore
 import { app } from "./Index";
-import { RigidBody } from "./rigidbody";
 import { SceneHierarchy } from "./SceneHierarchy";
 import { vec2 } from "gl-matrix";
 
@@ -19,7 +18,6 @@ export class GameHandler extends Container {
 
     private enemy_movement_1: CatMullRom;
     private enemy_movement_2: CatMullRom;
-    private rigid_body: RigidBody;
     private scene_hierarchy: SceneHierarchy;
  
 
@@ -43,9 +41,6 @@ export class GameHandler extends Container {
 
         this.enemy_movement_2 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.7,0.7), vec2.fromValues(0.8,0.7    ), vec2.fromValues(0.8,0.8), vec2.fromValues(0.7,0.8)], "tetanus.png");
         this.addChild(this.enemy_movement_2);
-
-        this.rigid_body = new RigidBody(screenWidth, screenHeight);
-        this.addChild(this.rigid_body);
 
         this.scene_hierarchy = new SceneHierarchy(screenWidth, screenHeight);
         this.addChild(this.scene_hierarchy);
@@ -95,6 +90,7 @@ export class GameHandler extends Container {
        this.enemy_movement_2.update(this.animation_ticker.deltaMS);
        //this.rigid_body.update(this.animation_ticker.deltaMS);
        this.scene_hierarchy.update(this.animation_ticker.deltaMS);
+       this.player_movement.update(this.animation_ticker.deltaMS);
     }
 
 
