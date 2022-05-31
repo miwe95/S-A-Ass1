@@ -50,6 +50,8 @@ export class GameHandler extends Container {
 
         this.render_ticker.autoStart = false;
         this.render_ticker.maxFPS = 60;
+        this.animation_ticker.maxFPS = 60;
+        
         this.animation_ticker.autoStart = false;
     }
 

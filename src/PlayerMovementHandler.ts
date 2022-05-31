@@ -1,5 +1,5 @@
 import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
-import { RigidBody } from "./rigidbody";
+import { RigidBody } from "./Rigidbody";
 
 
 export class PlayerMovementHandler extends Container {
@@ -81,6 +81,7 @@ export class PlayerMovementHandler extends Container {
         this.rigid_body.move_ = false;
         this.player.x = this.slingshot.x;
         this.player.y = this.slingshot.y - 50;
+        this.rigid_body.resetPlayerVars();
         this.player.on("mousemove", this.moveRopeAndPlayer);
         this.player.on("mouseup", this.firePlayer);
         this.slingshot.on("mouseup", this.firePlayer);
