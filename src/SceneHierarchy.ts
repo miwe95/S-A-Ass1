@@ -1,8 +1,6 @@
 import { mat3 } from "gl-matrix";
 import { Container } from "pixi.js";
 import { HierarchyEnemy } from "./HierarchyEnemy";
-const Keyboard = require('pixi.js-keyboard');
-
 
 export class SceneHierarchy extends Container {
 
@@ -54,36 +52,29 @@ export class SceneHierarchy extends Container {
 
 
     }
+    increaseRadius(dt: number) {
+        this.child1_.local_position_[0] += 100 * dt / 1000;
+        this.child1_.local_position_[1] += 100 * dt / 1000;
+        mat3.fromTranslation(this.child1_.local_translation_matrix, this.child1_.local_position_);
 
-    private checkKeyInput(dt:number){
-        Keyboard.update();
-        if (Keyboard.isKeyDown('ArrowUp', 'KeyW')) {
-            console.log("jj");
-            this.child1_.local_position_[0] += 100 * dt /1000;
-            this.child1_.local_position_[1] += 100* dt /1000;
-            mat3.fromTranslation(this.child1_.local_translation_matrix, this.child1_.local_position_);
-
-            this.child11_.local_position_[0] -= 100 * dt /1000;
-            this.child11_.local_position_[1] -= 100 * dt /1000;
-            mat3.fromTranslation(this.child11_.local_translation_matrix, this.child11_.local_position_);
-        }
-        Keyboard.update();
-        if (Keyboard.isKeyDown('ArrowDown', 'KeyS')) {
-            console.log("jj");
-            this.child1_.local_position_[0] -= 100 * dt /1000;
-            this.child1_.local_position_[1] -= 100 * dt /1000;
-            mat3.fromTranslation(this.child1_.local_translation_matrix, this.child1_.local_position_);
-
-            this.child11_.local_position_[0] += 100 * dt /1000;
-            this.child11_.local_position_[1] += 100 * dt /1000;
-            mat3.fromTranslation(this.child11_.local_translation_matrix, this.child11_.local_position_);
-        }
+        this.child11_.local_position_[0] -= 100 * dt / 1000;
+        this.child11_.local_position_[1] -= 100 * dt / 1000;
+        mat3.fromTranslation(this.child11_.local_translation_matrix, this.child11_.local_position_);
     }
 
+    decreaseRadius(dt: number) {
+        this.child1_.local_position_[0] -= 100 * dt / 1000;
+            this.child1_.local_position_[1] -= 100 * dt / 1000;
+            mat3.fromTranslation(this.child1_.local_translation_matrix, this.child1_.local_position_);
+
+            this.child11_.local_position_[0] += 100 * dt / 1000;
+            this.child11_.local_position_[1] += 100 * dt / 1000;
+            mat3.fromTranslation(this.child11_.local_translation_matrix, this.child11_.local_position_);
+    }
+
+   
     //@ts-ignore
     update(dt: number) {
-        this.checkKeyInput(dt);
-
         this.rotation_angle_ += this.rotation_speed_ * dt / 1000;
 
         var identity = mat3.create();

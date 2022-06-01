@@ -14,19 +14,23 @@ export class GameHandler extends Container {
     private scene_setup: SceneSetup;
     private render_ticker: Ticker;
     private animation_ticker: Ticker;
+    private keyboard_ticker: Ticker;
     private fps_render_text: Text;
     private fps_animation_text: Text;
 
     private enemy_movement_1: CatMullRom;
     private enemy_movement_2: CatMullRom;
     private scene_hierarchy: SceneHierarchy;
-
+    //@ts-ignore
+    private paused: boolean;
 
 
     constructor(screenWidth: number, screenHeight: number) {
         super();
+        this.paused = false;
         this.render_ticker = new Ticker();
         this.animation_ticker = new Ticker();
+        this.keyboard_ticker = new Ticker();
 
         this.scene_setup = new SceneSetup(screenWidth, screenHeight);
         this.addChild(this.scene_setup);
@@ -51,13 +55,15 @@ export class GameHandler extends Container {
 
         this.render_ticker.autoStart = false;
         this.render_ticker.maxFPS = 60;
-        this.animation_ticker.maxFPS = 60;
-
+        //this.animation_ticker.maxFPS = 240;
+    
         this.animation_ticker.autoStart = false;
+        this.keyboard_ticker.autoStart = false;
+        this.keyboard_ticker.add(this.checkKeyInput);
+        this.keyboard_ticker.start();
     }
 
-    private checkKeyInput(_dt: number) {
-
+    private keyInput(){
         if (Keyboard.isKeyPressed('KeyQ')) {
             if (this.enemy_movement_1.show_graphics) {
                 this.enemy_movement_1.removeGraphics();
@@ -67,11 +73,34 @@ export class GameHandler extends Container {
                 this.enemy_movement_2.showGraphics();
             }
         }
+        
         if (Keyboard.isKeyPressed('KeyW')) {
             this.enemy_movement_1.changeSpeed();
             this.enemy_movement_2.changeSpeed();
         }
+       
+        if (Keyboard.isKeyPressed('KeyP')) {
+            console.log("stopped")
+            this.animation_ticker.stop();
+            this.render_ticker.stop();
+        }
+      
+        if (Keyboard.isKeyPressed('KeyC')) {
+            console.log("started")
+            this.animation_ticker.start();
+            this.render_ticker.start();
+        }
+        if (Keyboard.isKeyDown('ArrowUp', 'KeyW')) {
+            this.scene_hierarchy.increaseRadius(this.animation_ticker.deltaMS)
+        }
+        if (Keyboard.isKeyDown('ArrowDown', 'KeyS')) {
+            this.scene_hierarchy.decreaseRadius(this.animation_ticker.deltaMS);
+        }
+    }
 
+    private checkKeyInput = (): void => {
+        this.keyInput();
+        Keyboard.update();
     }
 
     private showRenderFPS(ticker: Ticker,) {
@@ -98,6 +127,7 @@ export class GameHandler extends Container {
         this.animation_ticker.add(this.animationUpdate);
         this.render_ticker.start();
         this.animation_ticker.start();
+        
     }
 
     private renderUpdate = (): void => {
@@ -106,14 +136,12 @@ export class GameHandler extends Container {
     }
 
     private animationUpdate = (): void => {
-        this.checkKeyInput(this.animation_ticker.deltaMS);
         this.showAnimationFPS(this.animation_ticker);
         this.enemy_movement_1.update(this.animation_ticker.deltaMS);
         this.enemy_movement_2.update(this.animation_ticker.deltaMS);
         //this.rigid_body.update(this.animation_ticker.deltaMS);
         this.scene_hierarchy.update(this.animation_ticker.deltaMS);
         this.player_movement.update(this.animation_ticker.deltaMS);
-        Keyboard.update();
     }
 
 
