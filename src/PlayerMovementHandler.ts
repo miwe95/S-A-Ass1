@@ -70,15 +70,17 @@ export class PlayerMovementHandler extends Container {
         let player_pos: vec2 = vec2.fromValues(this.player.x, this.player.y);
         this.drawDebugCircle(slingshot_mid[0], slingshot_mid[1]);
         this.drawDebugCircle(player_pos[0], player_pos[1]);
-        let angle = vec2.angle(player_pos, slingshot_mid);
-        let angle_degrees = angle * 180 / Math.PI;
-        console.log("Slingshot x: " + slingshot_mid[0]);
-        console.log("Slingshot y: " + slingshot_mid[1]);
-        console.log("Player x: " + player_pos[0]);
-        console.log("Player y: " + player_pos[1]);
-        console.log("Angle Degree: " + angle_degrees);
-        console.log("Angle Radians: " + angle);
-        console.log("Cosinus: " + Math.cos(angle));
+        
+        let res: vec2 = vec2.fromValues(0,0);
+        vec2.sub(res, slingshot_mid, player_pos);
+        let angle = Math.atan(res[1]/res[0]);
+        
+        console.log("cos: " + Math.cos(angle));
+        console.log("sin: " + Math.sin(angle));
+        console.log("sub vector: ", res);
+        console.log("anglerad: " + angle);
+        console.log("angledegrees : " + angle * 180 / Math.PI);
+
         let distance: number = vec2.dist(slingshot_mid, player_pos);
         if (distance >= 200) {
             this.rigid_body.linear_velocity.x *= 1;
@@ -88,33 +90,7 @@ export class PlayerMovementHandler extends Container {
             this.rigid_body.linear_velocity.x *= distance / 200;
             this.rigid_body.linear_velocity.y *= distance / 200;
         }
-        console.log("Distance: " + distance);
-
-        let debug_line_1 = new Graphics();
-        debug_line_1.lineStyle(5, 0x7a4931, 1)
-            .moveTo(0, 0)
-            .lineTo(slingshot_mid[0], slingshot_mid[1]);
-
-        let debug_line_2 = new Graphics();
-        debug_line_2.lineStyle(5, 0x7a4931, 1)
-            .moveTo(0, 0)
-            .lineTo(player_pos[0], player_pos[1]);
-
-
-        // let debug_line_3 = new Graphics();
-        // debug_line_1.lineStyle(5, 0x880808, 1)
-        //     .moveTo(0, this.screen_height)
-        //     .lineTo(slingshot_mid[0], slingshot_mid[1]);
-
-        // let debug_line_4 = new Graphics();
-        // debug_line_2.lineStyle(5, 0x880808, 1)
-        //     .moveTo(0, this.screen_height)
-        //     .lineTo(player_pos[0], player_pos[1]);
-
-        this.addChild(debug_line_1);
-        this.addChild(debug_line_2);
-        // this.addChild(debug_line_3);
-        // this.addChild(debug_line_4);
+      
         this.rigid_body.move_ = true;
     }
 
