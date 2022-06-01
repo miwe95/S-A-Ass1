@@ -55,11 +55,10 @@ export class RigidBody extends Container {
         this.gravity = false;
         this.move_ = false;
         this.shooting_time = 0;
+        this.linear_velocity = new Vector(10,10);
     }
 
     move = (dt: number): void => {
-    
-    
         if (this.move_) {
             this.gravity = true;
             if (this.rb_object.y >= this.screenheigth - 50) {

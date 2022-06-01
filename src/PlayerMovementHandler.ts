@@ -57,14 +57,28 @@ export class PlayerMovementHandler extends Container {
     }
     //Called when left mousebutton is released
     private firePlayer = (_e: InteractionEvent): void => {
+        this.rigid_body.resetPlayerVars();
         this.clearListenerPlayerFire(_e);
         let slingshot_mid: vec2 = vec2.fromValues(this.slingshot.x+5, this.slingshot.y-55);
         let player_pos: vec2 = vec2.fromValues(this.player.x, this.player.y);
         this.drawDebugCircle(slingshot_mid[0], slingshot_mid[1]);
         this.drawDebugCircle(player_pos[0], player_pos[1]);
-
+        let angle = vec2.angle(player_pos, slingshot_mid);
+        let angle_degrees = angle * 180 / Math.PI;
+        console.log("Angle Degree: " + angle_degrees);
+        console.log("Angle Radians: " + angle);
         let distance : number = vec2.dist(slingshot_mid, player_pos);
-        console.log(distance);
+        if(distance >= 200)
+        {
+            this.rigid_body.linear_velocity.x *= 1;
+            this.rigid_body.linear_velocity.y *= 1;
+        }
+        else
+        {
+            this.rigid_body.linear_velocity.x *= distance / 200;
+            this.rigid_body.linear_velocity.y *= distance / 200;
+        }
+        console.log("Distance: " + distance);
         this.rigid_body.move_ = true;
     }
 
