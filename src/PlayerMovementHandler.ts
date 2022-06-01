@@ -90,7 +90,7 @@ export class PlayerMovementHandler extends Container {
             this.rigid_body.linear_velocity.x *= distance / 200;
             this.rigid_body.linear_velocity.y *= distance / 200;
         }
-      
+        this.rigid_body.launching_angle = angle;
         this.rigid_body.move_ = true;
     }
 

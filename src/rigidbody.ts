@@ -24,7 +24,9 @@ export class RigidBody extends Container {
     move_: boolean;
     private gravity_value: number;
     private shooting_time: number;
+    //@ts-ignore
     private acceleration: number;
+    launching_angle: number;
 
     constructor(screenWidth: number, screenHeight: number, object: Sprite) {
         super();
@@ -41,7 +43,7 @@ export class RigidBody extends Container {
         this.acceleration = 0;
         this.move_ = false;
         this.gravity_value = 9.81;
-
+        this.launching_angle = 0;
         //this.linear_velocity.x = this.force.x / this.mass;
         //this.linear_velocity.y = this.force.y / this.mass;
     }
@@ -59,6 +61,7 @@ export class RigidBody extends Container {
     }
 
     move = (dt: number): void => {
+        dt /= 1000;
         if (this.move_) {
             this.gravity = true;
             if (this.rb_object.y >= this.screenheigth - 50) {
@@ -66,9 +69,11 @@ export class RigidBody extends Container {
             }
             else {
                 //console.log("dt: " + dt);
-                this.addGravity(dt);
-                this.rb_object.x += (this.linear_velocity.x * dt / 1000) * 100;
-                this.rb_object.y -= ((this.linear_velocity.y * dt / 1000) - this.acceleration) * 100;
+                //this.addGravity(dt);
+                this.rb_object.x += (this.linear_velocity.x * dt * Math.cos(this.launching_angle)) * 100;
+                this.rb_object.y += ((this.linear_velocity.y * dt *  Math.sin(this.launching_angle)) - this.acceleration) * 100;
+                //this.rb_object.x += this.linear_velocity.x * dt * Math.cos(this.launching_angle) * 100;
+                //this.rb_object.y += (this.linear_velocity.y * dt * Math.sin(this.launching_angle) - this.acceleration) * 100;
                 //console.log(this.rb_object.y);
             }
         }
