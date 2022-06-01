@@ -1,5 +1,6 @@
 import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
 import { RigidBody } from "./Rigidbody";
+import { vec2 } from "gl-matrix";
 
 
 export class PlayerMovementHandler extends Container {
@@ -38,7 +39,7 @@ export class PlayerMovementHandler extends Container {
         this.slingshot.interactive = true;
         this.addChild(this.slingshot);
         this.slingshot.on("mousedown", this.preparePlayer);
-        this.rigid_body= new RigidBody(_screenWidth,screenHeight,this.player);
+        this.rigid_body = new RigidBody(_screenWidth, screenHeight, this.player);
 
     }
 
@@ -47,9 +48,23 @@ export class PlayerMovementHandler extends Container {
         this.rigid_body.move(dt);
     }
 
+    drawDebugCircle(x:number,y:number){
+        const gr = new Graphics();
+        gr.beginFill(0xffffff);
+        gr.drawCircle(x, y, 5);
+        gr.endFill();
+        this.addChild(gr)
+    }
     //Called when left mousebutton is released
     private firePlayer = (_e: InteractionEvent): void => {
         this.clearListenerPlayerFire(_e);
+        let slingshot_mid: vec2 = vec2.fromValues(this.slingshot.x+5, this.slingshot.y-55);
+        let player_pos: vec2 = vec2.fromValues(this.player.x, this.player.y);
+        this.drawDebugCircle(slingshot_mid[0], slingshot_mid[1]);
+        this.drawDebugCircle(player_pos[0], player_pos[1]);
+
+        let distance : number = vec2.dist(slingshot_mid, player_pos);
+        console.log(distance);
         this.rigid_body.move_ = true;
     }
 

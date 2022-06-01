@@ -10,7 +10,7 @@ export class RigidBody extends Container {
     private mass: number;
     //@ts-ignore
     private Inertia: number;
-    private linear_velocity: Vector;
+    linear_velocity: Vector;
     //@ts-ignore
     private angular_velocity: number;
     //@ts-ignore
@@ -66,7 +66,7 @@ export class RigidBody extends Container {
                 this.resetPlayerVars();
             }
             else {
-                console.log("dt: " + dt);
+                //console.log("dt: " + dt);
                 this.addGravity(dt);
                 this.rb_object.x += (this.linear_velocity.x * dt / 1000) * 100;
                 this.rb_object.y -= ((this.linear_velocity.y * dt / 1000) - this.acceleration) * 100;
