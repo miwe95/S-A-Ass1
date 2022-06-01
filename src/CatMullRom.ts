@@ -2,6 +2,7 @@ import { vec2 } from "gl-matrix";
 import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
 import { cGraphics } from "./Utils";
 
+
 class TableEntrys {
     segment: number;
     t: number;
@@ -21,7 +22,9 @@ export class CatMullRom extends Container {
     private selected_point: Graphics;
     //private arc_lengths: number[];
     private lookup_table: Map<number, TableEntrys>;
-    private speed: number;
+    speed: number;
+    show_graphics: boolean;
+    increase_speed: boolean;
 
 
     constructor(_screenWidth: number, _screenHeight: number, control_points_position: vec2[], png: string) {
@@ -30,22 +33,20 @@ export class CatMullRom extends Container {
         this.distance = 0;
         this.selected_point = new Graphics();
         this.speed = 0.1;
+        this.show_graphics = false;
+        this.increase_speed = false;
 
         this.catmull_points = [];
         this.control_points = [];
         this.lookup_table = new Map<number, TableEntrys>();
 
-        //01,01
-        //02,01
-        //02,02
-        //01,02
         this.control_points.push(new cGraphics(control_points_position[0][0] * _screenWidth, control_points_position[0][1] * _screenHeight, true));
         this.control_points.push(new cGraphics(control_points_position[1][0] * _screenWidth, control_points_position[1][1] * _screenHeight, true));
         this.control_points.push(new cGraphics(control_points_position[2][0] * _screenWidth, control_points_position[2][1] * _screenHeight, true));
         this.control_points.push(new cGraphics(control_points_position[3][0] * _screenWidth, control_points_position[3][1] * _screenHeight, true));
 
         this.calculateSamplePoints();
-        this.calculateControlPoints();
+        //this.drawControlPoints();
 
         this.enemy = Sprite.from(png);
         this.enemy.anchor.set(0.6);
@@ -57,12 +58,42 @@ export class CatMullRom extends Container {
         this.addChild(this.enemy);
     }
 
-    private calculateControlPoints() {
+
+    changeSpeed(){
+        if (this.increase_speed){
+            this.speed = 0.1;
+            this.increase_speed = !this.increase_speed;
+        }
+        else
+        {
+            this.speed = 1;
+            this.increase_speed = !this.increase_speed;
+        }
+    }
+
+    showGraphics() {
+        this.show_graphics = true;
+        for (var graphic of this.catmull_points) {
+            this.drawPoint(graphic, 0xe3e1e1, 3);
+            graphic.on("mouseup", this.releasePoint);
+        }
         for (var graphic of this.control_points) {
             graphic.on("mousedown", this.selectPoint);
             graphic.on("mouseup", this.releasePoint);
             this.drawPoint(graphic, 0xeb4034, 9);
         }
+
+    }
+
+    removeGraphics() {
+        this.show_graphics = false;
+        for (var graphic of this.catmull_points) {
+            this.removeChild(graphic);
+        }
+        for (var graphic of this.control_points) {
+            this.removeChild(graphic);
+        }
+
     }
 
     private reDrawControlPoints() {
@@ -168,15 +199,15 @@ export class CatMullRom extends Container {
 
         this.normalizeLengths(chordLength);
         //  console.log(this.lookup_table);
-
-        for (var graphic of this.catmull_points) {
-            this.drawPoint(graphic, 0xe3e1e1, 3);
-            graphic.on("mouseup", this.releasePoint);
+        if (this.show_graphics) {
+            for (var graphic of this.catmull_points) {
+                this.drawPoint(graphic, 0xe3e1e1, 3);
+                graphic.on("mouseup", this.releasePoint);
+            }
         }
     }
 
     update = (_delta: number): void => {
-
         let keys: number[];
         keys = [];
         // console.log(_delta);
@@ -190,7 +221,7 @@ export class CatMullRom extends Container {
 
         if (table_entry.segment == 0) {
 
-            this.distance += this.ease(this.distance, 0.05, 0.15) * this.speed * _delta / 1000 ;
+            this.distance += this.ease(this.distance, 0.05, 0.15) * this.speed * _delta / 1000;
             output = keys.reduce((prev, curr) => Math.abs(curr - this.distance) < Math.abs(prev - this.distance) ? curr : prev);
             table_entry = this.lookup_table.get(output) as TableEntrys;
         }
@@ -217,6 +248,7 @@ export class CatMullRom extends Container {
         if (output == 1) {
             this.distance = 0;
         }
+
     };
 
     private ease(t: number, k1: number, k2: number) {

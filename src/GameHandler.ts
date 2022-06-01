@@ -6,6 +6,7 @@ import { SceneSetup } from "./SceneSetup";
 import { app } from "./Index";
 import { SceneHierarchy } from "./SceneHierarchy";
 import { vec2 } from "gl-matrix";
+const Keyboard = require('pixi.js-keyboard');
 
 export class GameHandler extends Container {
 
@@ -19,11 +20,11 @@ export class GameHandler extends Container {
     private enemy_movement_1: CatMullRom;
     private enemy_movement_2: CatMullRom;
     private scene_hierarchy: SceneHierarchy;
- 
+
 
 
     constructor(screenWidth: number, screenHeight: number) {
-        super();    
+        super();
         this.render_ticker = new Ticker();
         this.animation_ticker = new Ticker();
 
@@ -36,10 +37,10 @@ export class GameHandler extends Container {
         //02,01
         //02,02
         //01,02
-        this.enemy_movement_1 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.1,0.1), vec2.fromValues(0.2,0.1), vec2.fromValues(0.2,0.2), vec2.fromValues(0.1,0.2)], "enemy.png");
+        this.enemy_movement_1 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.1, 0.1), vec2.fromValues(0.2, 0.1), vec2.fromValues(0.2, 0.2), vec2.fromValues(0.1, 0.2)], "enemy.png");
         this.addChild(this.enemy_movement_1);
 
-        this.enemy_movement_2 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.7,0.7), vec2.fromValues(0.8,0.7    ), vec2.fromValues(0.8,0.8), vec2.fromValues(0.7,0.8)], "tetanus.png");
+        this.enemy_movement_2 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.7, 0.7), vec2.fromValues(0.8, 0.7), vec2.fromValues(0.8, 0.8), vec2.fromValues(0.7, 0.8)], "tetanus.png");
         this.addChild(this.enemy_movement_2);
 
         this.scene_hierarchy = new SceneHierarchy(screenWidth, screenHeight);
@@ -51,25 +52,43 @@ export class GameHandler extends Container {
         this.render_ticker.autoStart = false;
         this.render_ticker.maxFPS = 60;
         this.animation_ticker.maxFPS = 60;
-        
+
         this.animation_ticker.autoStart = false;
     }
 
-    private showRenderFPS(ticker: Ticker, ) {
+    private checkKeyInput(_dt: number) {
+
+        if (Keyboard.isKeyPressed('KeyQ')) {
+            if (this.enemy_movement_1.show_graphics) {
+                this.enemy_movement_1.removeGraphics();
+                this.enemy_movement_2.removeGraphics();
+            } else {
+                this.enemy_movement_1.showGraphics();
+                this.enemy_movement_2.showGraphics();
+            }
+        }
+        if (Keyboard.isKeyPressed('KeyW')) {
+            this.enemy_movement_1.changeSpeed();
+            this.enemy_movement_2.changeSpeed();
+        }
+
+    }
+
+    private showRenderFPS(ticker: Ticker,) {
         //console.log(this.ticker.deltaMS);
         //console.log("delta_time" + this.ticker.deltaTime);
         //console.log("delta: " + _delta);
         this.removeChild(this.fps_render_text);
-        this.fps_render_text = new Text("Render FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'});
+        this.fps_render_text = new Text("Render FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
         this.addChild(this.fps_render_text)
     }
 
-    private showAnimationFPS(ticker: Ticker, ) {
+    private showAnimationFPS(ticker: Ticker,) {
         //console.log(this.ticker.deltaMS);
         //console.log("delta_time" + this.ticker.deltaTime);
         //console.log("delta: " + _delta);
         this.removeChild(this.fps_animation_text);
-        this.fps_animation_text = new Text("Animation FPS: " + Math.round(ticker.FPS).toString(),  { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'});
+        this.fps_animation_text = new Text("Animation FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
         this.fps_animation_text.transform.position.set(200, 0);
         this.addChild(this.fps_animation_text);
     }
@@ -87,12 +106,14 @@ export class GameHandler extends Container {
     }
 
     private animationUpdate = (): void => {
-       this.showAnimationFPS(this.animation_ticker);
-       this.enemy_movement_1.update(this.animation_ticker.deltaMS);
-       this.enemy_movement_2.update(this.animation_ticker.deltaMS);
-       //this.rigid_body.update(this.animation_ticker.deltaMS);
-       this.scene_hierarchy.update(this.animation_ticker.deltaMS);
-       this.player_movement.update(this.animation_ticker.deltaMS);
+        this.checkKeyInput(this.animation_ticker.deltaMS);
+        this.showAnimationFPS(this.animation_ticker);
+        this.enemy_movement_1.update(this.animation_ticker.deltaMS);
+        this.enemy_movement_2.update(this.animation_ticker.deltaMS);
+        //this.rigid_body.update(this.animation_ticker.deltaMS);
+        this.scene_hierarchy.update(this.animation_ticker.deltaMS);
+        this.player_movement.update(this.animation_ticker.deltaMS);
+        Keyboard.update();
     }
 
 
