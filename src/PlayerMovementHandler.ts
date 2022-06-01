@@ -74,21 +74,14 @@ export class PlayerMovementHandler extends Container {
         let res: vec2 = vec2.fromValues(0,0);
         vec2.sub(res, slingshot_mid, player_pos);
         let angle = Math.atan(res[1]/res[0]);
-        
-        console.log("cos: " + Math.cos(angle));
-        console.log("sin: " + Math.sin(angle));
-        console.log("sub vector: ", res);
-        console.log("anglerad: " + angle);
-        console.log("angledegrees : " + angle * 180 / Math.PI);
-
         let distance: number = vec2.dist(slingshot_mid, player_pos);
         if (distance >= 200) {
-            this.rigid_body.linear_velocity.x *= 1;
-            this.rigid_body.linear_velocity.y *= 1;
+            this.rigid_body.linear_velocity *= 1;
+          
         }
         else {
-            this.rigid_body.linear_velocity.x *= distance / 200;
-            this.rigid_body.linear_velocity.y *= distance / 200;
+            this.rigid_body.linear_velocity *= distance / 200;
+          
         }
         this.rigid_body.launching_angle = angle;
         this.rigid_body.move_ = true;

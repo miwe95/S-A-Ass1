@@ -1,7 +1,5 @@
 
 import { Container, Sprite } from "pixi.js";
-import { Vector } from "vector2d";
-
 
 export class RigidBody extends Container {
 
@@ -10,7 +8,7 @@ export class RigidBody extends Container {
     private mass: number;
     //@ts-ignore
     private Inertia: number;
-    linear_velocity: Vector;
+    linear_velocity: number;
     //@ts-ignore
     private angular_velocity: number;
     //@ts-ignore
@@ -34,7 +32,7 @@ export class RigidBody extends Container {
         this.screenwidth = screenWidth;
         this.rb_object = object;
         this.mass = 0.5;
-        this.linear_velocity = new Vector(10, 10);
+        this.linear_velocity = 20;
         this.angular_velocity = 0;
         this.torque = 0;
         this.Inertia = 0;
@@ -57,11 +55,10 @@ export class RigidBody extends Container {
         this.gravity = false;
         this.move_ = false;
         this.shooting_time = 0;
-        this.linear_velocity = new Vector(10,10);
+        this.linear_velocity = 20;
     }
 
     move = (dt: number): void => {
-        dt /= 1000;
         if (this.move_) {
             this.gravity = true;
             if (this.rb_object.y >= this.screenheigth - 50) {
@@ -69,9 +66,9 @@ export class RigidBody extends Container {
             }
             else {
                 //console.log("dt: " + dt);
-                //this.addGravity(dt);
-                this.rb_object.x += (this.linear_velocity.x * dt * Math.cos(this.launching_angle)) * 100;
-                this.rb_object.y += ((this.linear_velocity.y * dt *  Math.sin(this.launching_angle)) - this.acceleration) * 100;
+                this.addGravity(dt);
+                this.rb_object.x += (this.linear_velocity * dt / 1000 * Math.cos(this.launching_angle)) * 100;
+                this.rb_object.y -= ((this.linear_velocity * dt / 1000 *  -Math.sin(this.launching_angle)) - this.acceleration) * 100;
                 //this.rb_object.x += this.linear_velocity.x * dt * Math.cos(this.launching_angle) * 100;
                 //this.rb_object.y += (this.linear_velocity.y * dt * Math.sin(this.launching_angle) - this.acceleration) * 100;
                 //console.log(this.rb_object.y);
