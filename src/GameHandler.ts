@@ -1,5 +1,6 @@
 import { Container, Text, Ticker } from "pixi.js";
 import { PlayerMovementHandler } from "./PlayerMovementHandler";
+import { ParticleDynamics } from "./ParticleDynamics";
 import { CatMullRom } from "./CatMullRom";
 import { SceneSetup } from "./SceneSetup";
 //@ts-ignore
@@ -21,6 +22,7 @@ export class GameHandler extends Container {
     private enemy_movement_1: CatMullRom;
     private enemy_movement_2: CatMullRom;
     private scene_hierarchy: SceneHierarchy;
+    private particle_dynamics: ParticleDynamics;
     //@ts-ignore
     private paused: boolean;
 
@@ -49,6 +51,9 @@ export class GameHandler extends Container {
 
         this.scene_hierarchy = new SceneHierarchy(screenWidth, screenHeight);
         this.addChild(this.scene_hierarchy);
+
+        this.particle_dynamics = new ParticleDynamics(screenWidth, screenHeight);
+        this.addChild(this.particle_dynamics);
 
         this.fps_render_text = new Text('');
         this.fps_animation_text = new Text('');
@@ -142,6 +147,8 @@ export class GameHandler extends Container {
         //this.rigid_body.update(this.animation_ticker.deltaMS);
         this.scene_hierarchy.update(this.animation_ticker.deltaMS);
         this.player_movement.update(this.animation_ticker.deltaMS);
+        this.particle_dynamics.update(this.animation_ticker.deltaMS);
+
     }
 
 
