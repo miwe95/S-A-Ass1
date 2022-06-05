@@ -1,28 +1,30 @@
 import { Container, Text, Ticker } from "pixi.js";
-import { PlayerMovementHandler } from "./PlayerMovementHandler";
-import { ParticleDynamics } from "./ParticleDynamics";
+import { ParticleDynamicsDrawer } from "./ParticleDynamicsDrawer";
 import { CatMullRom } from "./CatMullRom";
 import { SceneSetup } from "./SceneSetup";
 //@ts-ignore
 import { app } from "./Index";
 import { SceneHierarchy } from "./SceneHierarchy";
 import { vec2 } from "gl-matrix";
-const Keyboard = require('pixi.js-keyboard');
+import { KeyboardHandler } from "./KeyboardHandler";
+import { ParticleDynamics } from "./ParticleDynamics";
+
 
 export class GameHandler extends Container {
 
-    private player_movement: PlayerMovementHandler;
     private scene_setup: SceneSetup;
-    private render_ticker: Ticker;
-    private animation_ticker: Ticker;
-    private keyboard_ticker: Ticker;
-    private fps_render_text: Text;
-    private fps_animation_text: Text;
-
     private enemy_movement_1: CatMullRom;
     private enemy_movement_2: CatMullRom;
     private scene_hierarchy: SceneHierarchy;
+    private particle_dynamics_drawer: ParticleDynamicsDrawer;
     private particle_dynamics: ParticleDynamics;
+    private keyboard_handler: KeyboardHandler;
+
+    render_ticker: Ticker;
+    animation_ticker: Ticker;
+
+    private fps_render_text: Text;
+    private fps_animation_text: Text;
     //@ts-ignore
     private paused: boolean;
 
@@ -32,17 +34,10 @@ export class GameHandler extends Container {
         this.paused = false;
         this.render_ticker = new Ticker();
         this.animation_ticker = new Ticker();
-        this.keyboard_ticker = new Ticker();
 
         this.scene_setup = new SceneSetup(screenWidth, screenHeight);
         this.addChild(this.scene_setup);
 
-        this.player_movement = new PlayerMovementHandler(screenWidth, screenHeight);
-        this.addChild(this.player_movement);
-        //01,01
-        //02,01
-        //02,02
-        //01,02
         this.enemy_movement_1 = new CatMullRom(screenWidth, screenHeight, [vec2.fromValues(0.1, 0.1), vec2.fromValues(0.2, 0.1), vec2.fromValues(0.2, 0.2), vec2.fromValues(0.1, 0.2)], "enemy.png");
         this.addChild(this.enemy_movement_1);
 
@@ -52,60 +47,24 @@ export class GameHandler extends Container {
         this.scene_hierarchy = new SceneHierarchy(screenWidth, screenHeight);
         this.addChild(this.scene_hierarchy);
 
+        this.particle_dynamics_drawer = new ParticleDynamicsDrawer(screenWidth, screenHeight);
+        this.addChild(this.particle_dynamics_drawer);
+
         this.particle_dynamics = new ParticleDynamics(screenWidth, screenHeight);
         this.addChild(this.particle_dynamics);
+
+        this.keyboard_handler = new KeyboardHandler(this, this.particle_dynamics_drawer, this.enemy_movement_1, this.enemy_movement_2, this.scene_hierarchy, this.particle_dynamics);
+        this.addChild(this.keyboard_handler);
 
         this.fps_render_text = new Text('');
         this.fps_animation_text = new Text('');
 
         this.render_ticker.autoStart = false;
         this.render_ticker.maxFPS = 60;
-        //this.animation_ticker.maxFPS = 240;
-    
+        this.animation_ticker.maxFPS = 60;
+
         this.animation_ticker.autoStart = false;
-        this.keyboard_ticker.autoStart = false;
-        this.keyboard_ticker.add(this.checkKeyInput);
-        this.keyboard_ticker.start();
-    }
 
-    private keyInput(){
-        if (Keyboard.isKeyPressed('KeyQ')) {
-            if (this.enemy_movement_1.show_graphics) {
-                this.enemy_movement_1.removeGraphics();
-                this.enemy_movement_2.removeGraphics();
-            } else {
-                this.enemy_movement_1.showGraphics();
-                this.enemy_movement_2.showGraphics();
-            }
-        }
-        
-        if (Keyboard.isKeyPressed('KeyW')) {
-            this.enemy_movement_1.changeSpeed();
-            this.enemy_movement_2.changeSpeed();
-        }
-       
-        if (Keyboard.isKeyPressed('KeyP')) {
-            console.log("stopped")
-            this.animation_ticker.stop();
-            this.render_ticker.stop();
-        }
-      
-        if (Keyboard.isKeyPressed('KeyC')) {
-            console.log("started")
-            this.animation_ticker.start();
-            this.render_ticker.start();
-        }
-        if (Keyboard.isKeyDown('ArrowUp', 'KeyW')) {
-            this.scene_hierarchy.increaseRadius(this.animation_ticker.deltaMS)
-        }
-        if (Keyboard.isKeyDown('ArrowDown', 'KeyS')) {
-            this.scene_hierarchy.decreaseRadius(this.animation_ticker.deltaMS);
-        }
-    }
-
-    private checkKeyInput = (): void => {
-        this.keyInput();
-        Keyboard.update();
     }
 
     private showRenderFPS(ticker: Ticker,) {
@@ -113,7 +72,8 @@ export class GameHandler extends Container {
         //console.log("delta_time" + this.ticker.deltaTime);
         //console.log("delta: " + _delta);
         this.removeChild(this.fps_render_text);
-        this.fps_render_text = new Text("Render FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+        //this.fps_render_text = new Text("Render FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+        document.getElementById('renderfps')!.textContent = "Render: " + Math.round(ticker.FPS).toString();
         this.addChild(this.fps_render_text)
     }
 
@@ -122,7 +82,8 @@ export class GameHandler extends Container {
         //console.log("delta_time" + this.ticker.deltaTime);
         //console.log("delta: " + _delta);
         this.removeChild(this.fps_animation_text);
-        this.fps_animation_text = new Text("Animation FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+        //this.fps_animation_text = new Text("Animation FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+        document.getElementById('animationfps')!.textContent = "Animation: " + Math.round(ticker.FPS).toString();
         this.fps_animation_text.transform.position.set(200, 0);
         this.addChild(this.fps_animation_text);
     }
@@ -132,7 +93,7 @@ export class GameHandler extends Container {
         this.animation_ticker.add(this.animationUpdate);
         this.render_ticker.start();
         this.animation_ticker.start();
-        
+
     }
 
     private renderUpdate = (): void => {
@@ -146,9 +107,7 @@ export class GameHandler extends Container {
         this.enemy_movement_2.update(this.animation_ticker.deltaMS);
         //this.rigid_body.update(this.animation_ticker.deltaMS);
         this.scene_hierarchy.update(this.animation_ticker.deltaMS);
-        this.player_movement.update(this.animation_ticker.deltaMS);
         this.particle_dynamics.update(this.animation_ticker.deltaMS);
-
     }
 
 

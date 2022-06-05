@@ -4,7 +4,6 @@ export class SceneSetup extends Container {
 
     private floor: Sprite;
     private rock: Sprite;
-
     constructor(screenWidth: number, screenHeight: number) {
         super();
         //floor
