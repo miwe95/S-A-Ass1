@@ -52,13 +52,13 @@ export class SceneHierarchy extends Container {
 
 
     }
-    increaseRadius(dt: number) {
-        this.child1_.local_position_[0] += 100 * dt / 1000;
-        this.child1_.local_position_[1] += 100 * dt / 1000;
+    increaseRadius(dt: number, _val: number) {
+        this.child1_.local_position_[0] += _val * dt / 1000;
+        this.child1_.local_position_[1] += _val * dt / 1000;
         mat3.fromTranslation(this.child1_.local_translation_matrix, this.child1_.local_position_);
 
-        this.child11_.local_position_[0] -= 100 * dt / 1000;
-        this.child11_.local_position_[1] -= 100 * dt / 1000;
+        this.child11_.local_position_[0] -= _val * dt / 1000;
+        this.child11_.local_position_[1] -= _val * dt / 1000;
         mat3.fromTranslation(this.child11_.local_translation_matrix, this.child11_.local_position_);
     }
 

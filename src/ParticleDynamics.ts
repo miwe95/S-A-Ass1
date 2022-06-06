@@ -161,7 +161,7 @@ export class ParticleDynamics extends Container {
         if (this.trajectory) {
             const gr = new Graphics();
             gr.beginFill(0xffffff);
-            gr.drawCircle(this.player.x, this.player.y, 1);
+            gr.drawCircle(this.player.x, this.player.y, 2);
             gr.endFill();
             this.trajectory_points.push(gr);
             this.addChild(gr)

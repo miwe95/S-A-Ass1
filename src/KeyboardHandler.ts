@@ -118,6 +118,10 @@ export class KeyboardHandler extends Container {
         val = document.getElementById("rendersetting")!.value;
         this.game_handler.render_ticker.maxFPS = val;
 
+        //@ts-ignore
+        val = document.getElementById("hierarchicalslider")!.value;
+        this.scene_hierarchy.increaseRadius(this.game_handler.animation_ticker.deltaMS, val);
+
         if (Keyboard.isKeyPressed('KeyQ')) {
             if (this.enemy_movement_1.show_graphics) {
                 this.enemy_movement_1.removeGraphics();
@@ -132,9 +136,7 @@ export class KeyboardHandler extends Container {
             this.enemy_movement_1.changeSpeed();
             this.enemy_movement_2.changeSpeed();
         }
-        if (Keyboard.isKeyDown('ArrowUp', 'KeyW')) {
-            this.scene_hierarchy.increaseRadius(this.game_handler.animation_ticker.deltaMS)
-        }
+       
         if (Keyboard.isKeyDown('ArrowDown', 'KeyS')) {
             this.scene_hierarchy.decreaseRadius(this.game_handler.animation_ticker.deltaMS);
         }
