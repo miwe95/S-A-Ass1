@@ -114,27 +114,5 @@ export class Voronoi extends Container {
             this.cells.set(vec2.fromValues(point_center[0] + x,point_center[1] + y), []);
             this.drawPoint(point_center[0] + x, point_center[1] + y);
         }
-        
-        //             this.drawPoint(current_position[0], current_position[1]);
-
-        //             this.cells.set(current_position, []);
-        //             this.drawPoint(current_position[0], current_position[1]);
-        //         }
-        // for (let y = this.screen_height * 0.1 - 100; y < this.screen_height * 0.1 + 100; y += this.seed_scaler_y)
-        //     for (let x = this.screen_width * 0.5 - 100; x < this.screen_width * 0.5 + 100; x += this.seed_scaler_x) {
-
-        //         let current_position = vec2.fromValues(x, y);
-        //         let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.1);
-        //         //calculate distance to impact point
-        //         //@ts-ignore
-        //         let dist_impact_point = vec2.distance(current_position, this.impact_point);
-
-        //         if (vec2.distance(current_position, point_center) < 100) {
-
-        //             this.cells.set(current_position, []);
-        //             this.drawPoint(current_position[0], current_position[1]);
-        //         }
-
-        //     }
     }
 }
