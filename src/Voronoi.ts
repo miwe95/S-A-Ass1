@@ -63,56 +63,97 @@ export class Voronoi extends Container {
     }
 
     private calculateCells() {
-        let closest_cell_center = vec2.fromValues(100000, 100000);
 
+        let closest_cell_center = vec2.fromValues(100000, 100000);
+        //@ts-ignore
+        let second_closest_cell_center = vec2.fromValues(100000, 100000);
         for (let y = this.screen_height * 0.1 - 100; y < this.screen_height * 0.1 + 100; y++)
             for (let x = this.screen_width * 0.5 - 100; x < this.screen_width * 0.5 + 100; x++) {
-                //find closest cell
                 let current_position = vec2.fromValues(x, y);
-                let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.1);
-
-                if (vec2.distance(current_position, point_center) < 100) {
-                    for (let cell_center of this.cells.keys()) {
-                        let current_position = vec2.fromValues(x, y);
-                        if (vec2.distance(cell_center, current_position) < vec2.distance(current_position, closest_cell_center)) {
-                            closest_cell_center = cell_center;
-                        }
+                for (let cell_center of this.cells.keys()) {
+                    if (vec2.distance(cell_center, current_position) < vec2.distance(current_position, closest_cell_center)) {
+                        second_closest_cell_center = closest_cell_center;
+                        closest_cell_center = cell_center;
                     }
-                    //add points to closest cell
-                    this.cells.get(closest_cell_center)?.push(vec2.fromValues(x, y));
-                    closest_cell_center = vec2.fromValues(100000, 100000);
                 }
+                let m :vec2 = vec2.fromValues(0,0);
+                vec2.add(m, second_closest_cell_center, closest_cell_center);
+                m[0] /= 2;
+                m[1] /= 2;
 
+                //this.drawPoint(m[0], m[1], 0xFF99FF)
+
+                let x_m: vec2 = vec2.fromValues(0,0);
+                let pb_pa: vec2 = vec2.fromValues(0,0);
+
+                vec2.sub(x_m, current_position,m);
+                vec2.sub(pb_pa, second_closest_cell_center, closest_cell_center);
+                let pb_pa_abs = pb_pa;
+                pb_pa_abs[0] = Math.abs(pb_pa[0]);
+                pb_pa_abs[1] = Math.abs(pb_pa[1]);
+                let pb_pa_div : vec2 = vec2.fromValues(0,0);
+                vec2.divide(pb_pa_div, pb_pa, pb_pa_abs);
+
+                let d: number = vec2.dot(x_m, pb_pa_div);
+
+                if(Math.floor(Math.abs(d)) == 0)
+                {
+                    this.drawPoint(current_position[0], current_position[1], 0xFF0000)
+                }
+                    //console.log(d);
 
             }
+
+
+        // let closest_cell_center = vec2.fromValues(100000, 100000);
+        // for (let y = this.screen_height * 0.1 - 100; y < this.screen_height * 0.1 + 100; y++)
+        //     for (let x = this.screen_width * 0.5 - 100; x < this.screen_width * 0.5 + 100; x++) {
+        //         //find closest cell
+        //         let current_position = vec2.fromValues(x, y);
+        //         let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.1);
+
+        //         if (vec2.distance(current_position, point_center) < 100) {
+        //             for (let cell_center of this.cells.keys()) {
+        //                 let current_position = vec2.fromValues(x, y);
+        //                 if (vec2.distance(cell_center, current_position) < vec2.distance(current_position, closest_cell_center)) {
+        //                     closest_cell_center = cell_center;
+        //                 }
+        //             }
+        //             //add points to closest cell
+        //             this.cells.get(closest_cell_center)?.push(vec2.fromValues(x, y));
+        //             closest_cell_center = vec2.fromValues(100000, 100000);
+        //         }
+
+
+        //     }
     }
 
     private calculateSeedPoints() {
 
-        let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.1);
+        //let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.1);
 
         //50px around impact
-        for (let i = 0; i < 25; i++) {
+        for (let i = 0; i < 3; i++) {
             let u = Math.random();
             let v = Math.random();
             let w = 50 * Math.sqrt(u);
             let t = 2 * Math.PI * v;
             let x = w * Math.cos(t)
             let y = w * Math.sin(t)
-            this.cells.set(vec2.fromValues(this.impact_point[0] + x,this.impact_point[1] + y), []);
-            this.drawPoint(point_center[0] + x, point_center[1] + y);
+            this.cells.set(vec2.fromValues(this.impact_point[0] + x, this.impact_point[1] + y), []);
+            this.drawPoint(this.impact_point[0] + x, this.impact_point[1]  + y);
         }
 
-        //100px around center
-        for (let i = 0; i < 10; i++) {
-            let u = Math.random();
-            let v = Math.random();
-            let w = 100 * Math.sqrt(u);
-            let t = 2 * Math.PI * v;
-            let x = w * Math.cos(t)
-            let y = w * Math.sin(t)
-            this.cells.set(vec2.fromValues(point_center[0] + x,point_center[1] + y), []);
-            this.drawPoint(point_center[0] + x, point_center[1] + y);
-        }
+        // //100px around center
+        // for (let i = 0; i < 10; i++) {
+        //     let u = Math.random();
+        //     let v = Math.random();
+        //     let w = 100 * Math.sqrt(u);
+        //     let t = 2 * Math.PI * v;
+        //     let x = w * Math.cos(t)
+        //     let y = w * Math.sin(t)
+        //     this.cells.set(vec2.fromValues(point_center[0] + x, point_center[1] + y), []);
+        //     this.drawPoint(point_center[0] + x, point_center[1] + y);
+        // }
     }
 }
