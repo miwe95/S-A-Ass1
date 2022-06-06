@@ -8,6 +8,7 @@ import { SceneHierarchy } from "./SceneHierarchy";
 import { vec2 } from "gl-matrix";
 import { KeyboardHandler } from "./KeyboardHandler";
 import { ParticleDynamics } from "./ParticleDynamics";
+import { Voronoi } from "./Voronoi";
 
 
 export class GameHandler extends Container {
@@ -19,6 +20,7 @@ export class GameHandler extends Container {
     private particle_dynamics_drawer: ParticleDynamicsDrawer;
     private particle_dynamics: ParticleDynamics;
     private keyboard_handler: KeyboardHandler;
+    private voronoi: Voronoi;
 
     render_ticker: Ticker;
     animation_ticker: Ticker;
@@ -53,8 +55,13 @@ export class GameHandler extends Container {
         this.particle_dynamics = new ParticleDynamics(screenWidth, screenHeight);
         this.addChild(this.particle_dynamics);
 
+        this.voronoi = new Voronoi(screenWidth, screenHeight);
+        this.addChild(this.voronoi);
+
         this.keyboard_handler = new KeyboardHandler(this, this.particle_dynamics_drawer, this.enemy_movement_1, this.enemy_movement_2, this.scene_hierarchy, this.particle_dynamics);
         this.addChild(this.keyboard_handler);
+
+
 
         this.fps_render_text = new Text('');
         this.fps_animation_text = new Text('');
