@@ -19,7 +19,7 @@ export class Voronoi extends Container {
         this.impact_point = vec2.fromValues(0, 0);
         this.circle = new Graphics();
         this.circle.beginFill(0xffffff);
-        this.circle.drawCircle(_screenWidth * 0.5, _screenHeight * 0.1, 100);
+        this.circle.drawCircle(_screenWidth * 0.5, _screenHeight * 0.5, 400);
         this.circle.endFill();
         this.circle.interactive = true;
         this.addChild(this.circle);
@@ -67,12 +67,12 @@ export class Voronoi extends Container {
         let closest_cell_center = vec2.fromValues(100000, 100000);
         //@ts-ignore
         let second_closest_cell_center = vec2.fromValues(100000, 100000);
-        for (let y = this.screen_height * 0.1 - 100; y < this.screen_height * 0.1 + 100; y++)
-            for (let x = this.screen_width * 0.5 - 100; x < this.screen_width * 0.5 + 100; x++) {
+        for (let y = this.screen_height * 0.5 - 400; y < this.screen_height * 0.5 + 400; y++)
+            for (let x = this.screen_width * 0.5 - 400; x < this.screen_width * 0.5 + 400; x++) {
                 
                     let current_position = vec2.fromValues(x, y);
-                    let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.1);
-                    if (vec2.distance(current_position, point_center) < 100) {
+                    let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.5);
+                    if (vec2.distance(current_position, point_center) < 400) {
                     for (let cell_center of this.cells.keys()) {
                         if (vec2.distance(cell_center, current_position) < vec2.distance(current_position, closest_cell_center)) {
                             second_closest_cell_center = closest_cell_center;
@@ -81,8 +81,8 @@ export class Voronoi extends Container {
                     }
                     let m: vec2 = vec2.fromValues(0, 0);
                     vec2.add(m, second_closest_cell_center, closest_cell_center);
-                    m[0] /= 2;
-                    m[1] /= 2;
+                    m[0] = Math.round(m[0] / 2);
+                    m[1] = Math.round(m[1] / 2);
 
                     //this.drawPoint(m[0], m[1], 0xFF99FF)
 
@@ -98,7 +98,7 @@ export class Voronoi extends Container {
 
                     let d: number = vec2.dot(x_m, pb_pa_div);
 
-                    if (Math.floor(Math.abs(d)) <= 1 && Math.floor(Math.abs(d)) >= -1) {
+                    if (Math.round(Math.abs(d)) <= 1 + Math.random() * 5) {
                         this.drawPoint(current_position[0], current_position[1], 0x20edf7)
                     }
                     //console.log(d);
@@ -131,17 +131,17 @@ export class Voronoi extends Container {
 
     private calculateSeedPoints() {
 
-        let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.1);
+        let point_center = vec2.fromValues(this.screen_width * 0.5, this.screen_height * 0.5);
 
         //50px around impact
         for (let i = 0; i < 20; i++) {
             let u = Math.random();
             let v = Math.random();
-            let w = 50 * Math.sqrt(u);
+            let w = 100 * Math.sqrt(u);
             let t = 2 * Math.PI * v;
             let x = w * Math.cos(t)
             let y = w * Math.sin(t)
-            if(vec2.distance(point_center, vec2.fromValues(this.impact_point[0] + x, this.impact_point[1] + y)) < 100){
+            if(vec2.distance(point_center, vec2.fromValues(this.impact_point[0] + x, this.impact_point[1] + y)) < 400){
                 this.cells.set(vec2.fromValues(this.impact_point[0] + x, this.impact_point[1] + y), []);
                 this.drawPoint(this.impact_point[0] + x, this.impact_point[1] + y);
             }
