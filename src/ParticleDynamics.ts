@@ -157,7 +157,6 @@ export class ParticleDynamics extends Container {
     }
 
     drawTrajectory() {
-        console.log(this.trajectory);
         if (this.trajectory) {
             const gr = new Graphics();
             gr.beginFill(0xffffff);

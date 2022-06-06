@@ -30,7 +30,7 @@ export class Voronoi extends Container {
 
     breakCircle = (_e: InteractionEvent) => {
 
-        console.log(this.impact_point);
+        //console.log(this.impact_point);
         this.impact_point = vec2.fromValues(_e.data.global.x, _e.data.global.y);
         this.calculateSeedPoints();
         this.calculateCells();
