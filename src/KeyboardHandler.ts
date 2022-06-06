@@ -14,7 +14,9 @@ export class KeyboardHandler extends Container {
     private pause_game_toggle: HTMLElement;
     private pause_game_toggle_input: boolean;
     private particle_dynamics_method: HTMLElement;
-    private particle_dynamics_toggle: boolean;
+    private particle_dynamics_trajectory: HTMLElement;
+    private particle_dynamics_method_toggle: boolean;
+    private particle_dynamics_trajectory_toggle: boolean;
     private particle_dynamics_drawer: ParticleDynamicsDrawer;
     private particle_dynamics: ParticleDynamics;
     private game_handler: GameHandler;
@@ -39,7 +41,8 @@ export class KeyboardHandler extends Container {
 
         this.forcefield_toggle_input = false;
         this.pause_game_toggle_input = false;
-        this.particle_dynamics_toggle = false;
+        this.particle_dynamics_method_toggle = false;
+        this.particle_dynamics_trajectory_toggle = false;
    
         this.forefield_toggle = document.getElementById('forcefield')!;
         this.forefield_toggle!.addEventListener('change', this.handleForceFieldToggleChange);
@@ -49,10 +52,27 @@ export class KeyboardHandler extends Container {
 
         this.particle_dynamics_method = document.getElementById("method")!;
         this.particle_dynamics_method.addEventListener('change', this.handleParticleDynamicsMethodChange);
+
+        this.particle_dynamics_trajectory = document.getElementById("trajectory")!;
+        this.particle_dynamics_trajectory.addEventListener('change', this.handleParticleDynamicsTrajectoryChange);
+        this.particle_dynamics_trajectory.addEventListener('change', this.handleParticleDynamicsTrajectoryChange);
+    }
+
+    private handleParticleDynamicsTrajectoryChange = (): void => {
+        if(!this.particle_dynamics_trajectory_toggle)
+        {
+            this.particle_dynamics.trajectory = true;
+        }
+        else
+        {
+            this.particle_dynamics.trajectory = false;
+            this.particle_dynamics.removeTrajectory();
+        }
+        this.particle_dynamics_trajectory_toggle = !this.particle_dynamics_trajectory_toggle;
     }
 
     private handleParticleDynamicsMethodChange = (): void => {
-        if(!this.particle_dynamics_toggle)
+        if(!this.particle_dynamics_method_toggle)
         {
             this.particle_dynamics.euler = true;
         }
@@ -60,7 +80,7 @@ export class KeyboardHandler extends Container {
         {
             this.particle_dynamics.euler = false;
         }
-        this.particle_dynamics_toggle = !this.particle_dynamics_toggle;
+        this.particle_dynamics_method_toggle = !this.particle_dynamics_method_toggle;
     }
     
     private handleForceFieldToggleChange = (): void => {

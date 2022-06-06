@@ -6,9 +6,9 @@ export class ParticleDynamics extends Container {
 
     //@ts-ignore
     private mass: number;
-  
+
     player_velocity: vec2;
-  
+
     private screenheigth: number;
 
     private screenwidth: number;
@@ -19,14 +19,18 @@ export class ParticleDynamics extends Container {
     private acceleration: number;
     launching_angle: number;
     euler: boolean;
+    trajectory: boolean;
     private slingshot: Sprite;
     private slingshot_rope_left: Graphics;
     private slingshot_rope_right: Graphics;
     private player: Sprite;
+    private trajectory_points: Array<Graphics>;
 
     constructor(screenWidth: number, screenHeight: number) {
         super();
         this.euler = false;
+        this.trajectory = false;
+        this.trajectory_points = [];
         this.screenheigth = screenHeight;
         this.screenwidth = screenWidth;
         this.mass = 0.5;
@@ -115,7 +119,7 @@ export class ParticleDynamics extends Container {
             //@ts-ignore
             let distance = vec2.dist(p, center);
             vec2.sub(sub, center, p);
-            return vec2.fromValues(sub[0] / distance * 20 * (1 - distance / scale_dist), sub[1] / distance * 20 * (1 - distance / scale_dist));
+            return vec2.fromValues(sub[0] / distance * 5 * (1 - distance / scale_dist), sub[1] / distance * 5 * (1 - distance / scale_dist));
 
         }
         else {
@@ -139,7 +143,28 @@ export class ParticleDynamics extends Container {
                 let new_pos = this.ODE(dt);
                 this.player.x += new_pos[0] * dt / 1000;
                 this.player.y += new_pos[1] * dt / 1000;
+                this.drawTrajectory();
             }
+        }
+    }
+
+    removeTrajectory(){
+        for(let p of this.trajectory_points)
+        {
+            this.removeChild(p);
+        }
+        this.trajectory_points = [];
+    }
+
+    drawTrajectory() {
+        console.log(this.trajectory);
+        if (this.trajectory) {
+            const gr = new Graphics();
+            gr.beginFill(0xffffff);
+            gr.drawCircle(this.player.x, this.player.y, 1);
+            gr.endFill();
+            this.trajectory_points.push(gr);
+            this.addChild(gr)
         }
     }
 
@@ -158,20 +183,20 @@ export class ParticleDynamics extends Container {
         let player_pos: vec2 = vec2.fromValues(this.player.x, this.player.y);
         this.drawDebugCircle(slingshot_mid[0], slingshot_mid[1]);
         this.drawDebugCircle(player_pos[0], player_pos[1]);
-        
-        let res: vec2 = vec2.fromValues(0,0);
+
+        let res: vec2 = vec2.fromValues(0, 0);
         vec2.sub(res, slingshot_mid, player_pos);
-        let angle = Math.atan(res[1]/res[0]);
+        let angle = Math.atan(res[1] / res[0]);
         let distance: number = vec2.dist(slingshot_mid, player_pos);
         if (distance >= 200) {
             this.player_velocity[0] *= (1 * distance / 200 * Math.cos(angle));
             this.player_velocity[1] *= (1 * distance / 200 * -Math.sin(angle));
-          
+
         }
         else {
             this.player_velocity[0] *= (distance / 200 * Math.cos(angle));
             this.player_velocity[1] *= (distance / 200 * -Math.sin(angle));
-          
+
         }
         console.log("start velocity x: " + this.player_velocity[0]);
         console.log("start velocity y: " + this.player_velocity[1]);
