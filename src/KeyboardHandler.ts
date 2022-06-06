@@ -2,7 +2,7 @@ import { Container, Ticker } from "pixi.js";
 import { CatMullRom } from "./CatMullRom";
 import { GameHandler } from "./GameHandler";
 import { ParticleDynamicsDrawer } from "./ParticleDynamicsDrawer";
-import {ParticleDynamics} from "./ParticleDynamics"
+import { ParticleDynamics } from "./ParticleDynamics"
 import { SceneHierarchy } from "./SceneHierarchy";
 const Keyboard = require('pixi.js-keyboard');
 
@@ -15,8 +15,11 @@ export class KeyboardHandler extends Container {
     private pause_game_toggle_input: boolean;
     private particle_dynamics_method: HTMLElement;
     private particle_dynamics_trajectory: HTMLElement;
+    private splines: HTMLElement;
+    private splines_speed: HTMLElement;
     private particle_dynamics_method_toggle: boolean;
     private particle_dynamics_trajectory_toggle: boolean;
+    private splines_toggle: boolean;
     private particle_dynamics_drawer: ParticleDynamicsDrawer;
     private particle_dynamics: ParticleDynamics;
     private game_handler: GameHandler;
@@ -43,7 +46,8 @@ export class KeyboardHandler extends Container {
         this.pause_game_toggle_input = false;
         this.particle_dynamics_method_toggle = false;
         this.particle_dynamics_trajectory_toggle = false;
-   
+        this.splines_toggle = false;
+
         this.forefield_toggle = document.getElementById('forcefield')!;
         this.forefield_toggle!.addEventListener('change', this.handleForceFieldToggleChange);
 
@@ -55,16 +59,36 @@ export class KeyboardHandler extends Container {
 
         this.particle_dynamics_trajectory = document.getElementById("trajectory")!;
         this.particle_dynamics_trajectory.addEventListener('change', this.handleParticleDynamicsTrajectoryChange);
-        this.particle_dynamics_trajectory.addEventListener('change', this.handleParticleDynamicsTrajectoryChange);
+
+        this.splines = document.getElementById("splines")!;
+        this.splines.addEventListener('change', this.handleSplinesChange);
+
+        this.splines_speed = document.getElementById("splinesspeed")!;
+        this.splines_speed.addEventListener('change', this.handleSplinesSpeedChange);
+    }
+
+    private handleSplinesSpeedChange = (): void => {
+        this.enemy_movement_1.changeSpeed();
+        this.enemy_movement_2.changeSpeed();
+    }
+
+    private handleSplinesChange = (): void => {
+        if (!this.splines_toggle) {
+            this.enemy_movement_1.showGraphics();
+            this.enemy_movement_2.showGraphics();
+        }
+        else {
+            this.enemy_movement_1.removeGraphics();
+            this.enemy_movement_2.removeGraphics();
+        }
+        this.splines_toggle = !this.splines_toggle;
     }
 
     private handleParticleDynamicsTrajectoryChange = (): void => {
-        if(!this.particle_dynamics_trajectory_toggle)
-        {
+        if (!this.particle_dynamics_trajectory_toggle) {
             this.particle_dynamics.trajectory = true;
         }
-        else
-        {
+        else {
             this.particle_dynamics.trajectory = false;
             this.particle_dynamics.removeTrajectory();
         }
@@ -72,37 +96,33 @@ export class KeyboardHandler extends Container {
     }
 
     private handleParticleDynamicsMethodChange = (): void => {
-        if(!this.particle_dynamics_method_toggle)
-        {
+        if (!this.particle_dynamics_method_toggle) {
             this.particle_dynamics.euler = true;
         }
-        else
-        {
+        else {
             this.particle_dynamics.euler = false;
         }
         this.particle_dynamics_method_toggle = !this.particle_dynamics_method_toggle;
     }
-    
+
     private handleForceFieldToggleChange = (): void => {
         //@ts-ignore
         console.log(this.particle_dynamics_drawer);
         if (!this.forcefield_toggle_input)
-        this.particle_dynamics_drawer.drawForceField();
+            this.particle_dynamics_drawer.drawForceField();
         else
-        this.particle_dynamics_drawer.removeForceField();
-        
+            this.particle_dynamics_drawer.removeForceField();
+
         this.forcefield_toggle_input = !this.forcefield_toggle_input;
-    
+
     }
-    
+
     private handlePauseGameToggleChange = (): void => {
-        if (!this.pause_game_toggle_input)
-        {
+        if (!this.pause_game_toggle_input) {
             this.game_handler.animation_ticker.stop();
             this.game_handler.render_ticker.stop();
         }
-        else
-        {
+        else {
             this.game_handler.animation_ticker.start();
             this.game_handler.render_ticker.start();
         }
@@ -135,10 +155,6 @@ export class KeyboardHandler extends Container {
         if (Keyboard.isKeyPressed('KeyW')) {
             this.enemy_movement_1.changeSpeed();
             this.enemy_movement_2.changeSpeed();
-        }
-       
-        if (Keyboard.isKeyDown('ArrowDown', 'KeyS')) {
-            this.scene_hierarchy.decreaseRadius(this.game_handler.animation_ticker.deltaMS);
         }
     }
 
