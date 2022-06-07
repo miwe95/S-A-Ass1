@@ -1,6 +1,7 @@
 
 import { vec2 } from "gl-matrix";
 import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
+import { EnemyHandler } from './EnemyHandler';
 
 export class ParticleDynamics extends Container {
 
@@ -20,16 +21,19 @@ export class ParticleDynamics extends Container {
     launching_angle: number;
     euler: boolean;
     trajectory: boolean;
+    player_resetted: boolean;
     private slingshot: Sprite;
     private slingshot_rope_left: Graphics;
     private slingshot_rope_right: Graphics;
     private player: Sprite;
     private trajectory_points: Array<Graphics>;
+    private pointcounter: number;
 
     constructor(screenWidth: number, screenHeight: number) {
         super();
         this.euler = false;
         this.trajectory = false;
+        this.player_resetted = true;
         this.trajectory_points = [];
         this.screenheigth = screenHeight;
         this.screenwidth = screenWidth;
@@ -39,6 +43,7 @@ export class ParticleDynamics extends Container {
         this.acceleration = 0;
         this.move_ = false;
         this.launching_angle = 0;
+        this.pointcounter = 0;
 
         this.slingshot_rope_right = new Graphics();
         this.addChild(this.slingshot_rope_right);
@@ -130,6 +135,7 @@ export class ParticleDynamics extends Container {
     resetPlayerVars() {
         this.gravity = false;
         this.move_ = false;
+        this.player_resetted = true;
         this.player_velocity = vec2.fromValues(2000, -2000);
     }
 
@@ -146,6 +152,48 @@ export class ParticleDynamics extends Container {
                 this.drawTrajectory();
             }
         }
+
+        let left =  0;
+        let right =  0;
+        let top = 0;
+        let bottom = 0;
+
+        for (let index = 0; index < EnemyHandler.getInstance().spriteCollection.length; index++)
+        {
+           let width = EnemyHandler.getInstance().spriteCollection.at(index)?.width;
+           let height = EnemyHandler.getInstance().spriteCollection.at(index)?.height;
+           let x = EnemyHandler.getInstance().spriteCollection.at(index)?.x;
+           let y = EnemyHandler.getInstance().spriteCollection.at(index)?.y;
+
+           if (width != null && x != null && height != null && y != null) {
+            left =  x - (width / 2);
+            right =  x + (width/2);
+            top = y + (height / 2);
+            bottom = y - (height / 2);
+           }
+
+           if (left != null && right != null && top != null && bottom != null)
+           {
+               if (this.player.x > left && this.player.x < right && this.player.y > bottom && this.player.y < top && this.player_resetted)
+               {
+                   this.pointcounter = this.pointcounter - 1;
+                   document.getElementById('pointoutput')!.textContent = this.pointcounter.toString();
+                   this.player_resetted = false;
+               }
+               
+           }
+        }
+
+
+
+
+        if (this.player.x >= this.screenwidth && this.player_resetted) {
+            this.pointcounter = this.pointcounter + 1;
+            document.getElementById('pointoutput')!.textContent = this.pointcounter.toString();
+            this.player_resetted = false;
+        }
+  
+
     }
 
     removeTrajectory(){
@@ -201,6 +249,7 @@ export class ParticleDynamics extends Container {
         console.log("start velocity y: " + this.player_velocity[1]);
         this.launching_angle = angle;
         this.move_ = true;
+
     }
 
     //called to clear drawings when player fired

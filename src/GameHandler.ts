@@ -88,10 +88,11 @@ export class GameHandler extends Container {
         //console.log("delta: " + _delta);
         this.removeChild(this.fps_animation_text);
         //this.fps_animation_text = new Text("Animation FPS: " + Math.round(ticker.FPS).toString(), { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
-        document.getElementById('animationfps')!.textContent = "Animation: " + Math.round(ticker.FPS).toString();
+        document.getElementById('animationfps')!.textContent = "Animation: " + Math.round(ticker.FPS).toString();  
         this.fps_animation_text.transform.position.set(200, 0);
         this.addChild(this.fps_animation_text);
     }
+
 
     startLoops() {
         this.render_ticker.add(this.renderUpdate);
@@ -108,6 +109,7 @@ export class GameHandler extends Container {
 
     private animationUpdate = (): void => {
         this.showAnimationFPS(this.animation_ticker);
+        //this.showPoints(this.animation_ticker);
         this.enemy_movement_1.update(this.animation_ticker.deltaMS);
         this.enemy_movement_2.update(this.animation_ticker.deltaMS);
         //this.rigid_body.update(this.animation_ticker.deltaMS);

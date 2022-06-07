@@ -1,6 +1,7 @@
 import { vec2 } from "gl-matrix";
 import { Container, Graphics, InteractionEvent, Sprite } from "pixi.js";
 import { cGraphics } from "./Utils";
+import { EnemyHandler } from './EnemyHandler';
 
 
 class TableEntrys {
@@ -55,6 +56,7 @@ export class CatMullRom extends Container {
         this.enemy.x = this.control_points[0].x;
         this.enemy.y = this.control_points[0].y;
         this.enemy.interactive = true;
+        EnemyHandler.getInstance().addSpriteToCollection(this.enemy);
         this.addChild(this.enemy);
     }
 

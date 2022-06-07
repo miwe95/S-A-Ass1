@@ -19,7 +19,7 @@ export class Voronoi extends Container {
         this.impact_point = vec2.fromValues(0, 0);
         this.circle = new Graphics();
         this.circle.beginFill(0xffffff);
-        this.circle.drawCircle(_screenWidth * 0.5, _screenHeight * 0.5, 400);
+        this.circle.drawCircle(_screenWidth * 0.5, _screenHeight * 0.5, 40);
         this.circle.endFill();
         this.circle.interactive = true;
         this.addChild(this.circle);

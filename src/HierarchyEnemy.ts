@@ -1,6 +1,7 @@
 import { Container, Graphics, Sprite } from "pixi.js";
 //import { mat3, vec2, vec3 } from "gl-matrix";
 import { mat3, vec2, vec3 } from "gl-matrix";
+import { EnemyHandler } from './EnemyHandler';
 
 export class HierarchyEnemy extends Container {
 
@@ -34,6 +35,7 @@ export class HierarchyEnemy extends Container {
         this.sprite_.pivot.set(this.sprite_.width / 2, this.sprite_.height / 2);
         this.sprite_.interactive = true;
         this.sprite_.scale.set(scale);
+        EnemyHandler.getInstance().addSpriteToCollection(this.sprite_);
         this.addChild(this.sprite_);
         this.addChild(this.point_);
         this.local_position_ = vec2.fromValues(-50,-50);
