@@ -4,6 +4,7 @@ import { GameHandler } from "./GameHandler";
 import { ParticleDynamicsDrawer } from "./ParticleDynamicsDrawer";
 import { ParticleDynamics } from "./ParticleDynamics"
 import { SceneHierarchy } from "./SceneHierarchy";
+import { Voronoi } from "./Voronoi";
 const Keyboard = require('pixi.js-keyboard');
 
 export class KeyboardHandler extends Container {
@@ -15,6 +16,7 @@ export class KeyboardHandler extends Container {
     private pause_game_toggle_input: boolean;
     private particle_dynamics_method: HTMLElement;
     private particle_dynamics_trajectory: HTMLElement;
+    private show_distance_field: HTMLElement;
     private splines: HTMLElement;
     private splines_speed: HTMLElement;
     private particle_dynamics_method_toggle: boolean;
@@ -26,8 +28,9 @@ export class KeyboardHandler extends Container {
     private enemy_movement_1: CatMullRom;
     private enemy_movement_2: CatMullRom;
     private scene_hierarchy: SceneHierarchy;
+    private voronoi: Voronoi;
 
-    constructor(game_handler: GameHandler, particle_dynamics_drawer: ParticleDynamicsDrawer, enemy_movement_1: CatMullRom, enemy_movement_2: CatMullRom, scene_hierarchy: SceneHierarchy, particle_dynamics: ParticleDynamics) {
+    constructor(game_handler: GameHandler, particle_dynamics_drawer: ParticleDynamicsDrawer, enemy_movement_1: CatMullRom, enemy_movement_2: CatMullRom, scene_hierarchy: SceneHierarchy, particle_dynamics: ParticleDynamics, voronoi: Voronoi) {
         super();
 
         this.particle_dynamics = particle_dynamics;
@@ -36,6 +39,7 @@ export class KeyboardHandler extends Container {
         this.enemy_movement_1 = enemy_movement_1;
         this.enemy_movement_2 = enemy_movement_2;
         this.scene_hierarchy = scene_hierarchy;
+        this.voronoi = voronoi;
 
         this.keyboard_ticker = new Ticker();
         this.keyboard_ticker.autoStart = false;
@@ -65,6 +69,13 @@ export class KeyboardHandler extends Container {
 
         this.splines_speed = document.getElementById("splinesspeed")!;
         this.splines_speed.addEventListener('change', this.handleSplinesSpeedChange);
+
+        this.show_distance_field = document.getElementById("distancefield")!;
+        this.show_distance_field.addEventListener("change", this.handleShowDistancefield)
+    }
+
+    private handleShowDistancefield = (): void => {
+        this.voronoi.show_distance_field = !this.voronoi.show_distance_field;
     }
 
     private handleSplinesSpeedChange = (): void => {

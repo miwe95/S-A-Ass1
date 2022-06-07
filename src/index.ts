@@ -6,7 +6,7 @@ export const app = new Application({
 	resolution: window.devicePixelRatio || 1,
 	autoDensity: true,
 	backgroundColor: 0x20edf7,
-	width: innerWidth,
+	width: innerWidth * 0.85,
 	height: innerHeight,
 	autoStart: false
 });

@@ -11,6 +11,7 @@ export class Voronoi extends Container {
     private cells: Map<vec2, Array<vec2>>;
     private impact_point: vec2;
     private radius: number;
+    show_distance_field:boolean;
 
 
     constructor(_screenWidth: number, _screenHeight: number) {
@@ -18,6 +19,7 @@ export class Voronoi extends Container {
         this.screen_width = _screenWidth;
         this.screen_height = _screenHeight;
         this.radius = 100;
+        this.show_distance_field = false;
 
         this.cells = new Map();
         this.impact_point = vec2.fromValues(0, 0);
@@ -124,7 +126,10 @@ export class Voronoi extends Container {
                     //var value = perlin.noise.simplex2(x / 100, y / 100);
                     //d += value;
 
-                    //this.colorDistanceField(Math.abs(d), current_position);
+                    if(this.show_distance_field)
+                    {
+                        this.colorDistanceField(Math.abs(d), current_position);
+                    }
 
                     if (Math.floor(Math.abs(d)) == 0) {
                         this.drawPoint(current_position[0], current_position[1], 0x20edf7)
