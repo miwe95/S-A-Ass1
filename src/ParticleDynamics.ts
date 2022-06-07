@@ -28,6 +28,7 @@ export class ParticleDynamics extends Container {
     private player: Sprite;
     private trajectory_points: Array<Graphics>;
     private pointcounter: number;
+    private lifecounter: number;
 
     constructor(screenWidth: number, screenHeight: number) {
         super();
@@ -44,6 +45,9 @@ export class ParticleDynamics extends Container {
         this.move_ = false;
         this.launching_angle = 0;
         this.pointcounter = 0;
+        this.lifecounter = 3;
+        document.getElementById('pointoutput')!.textContent = this.pointcounter.toString();
+        document.getElementById('lifeoutput')!.textContent = this.lifecounter.toString();
 
         this.slingshot_rope_right = new Graphics();
         this.addChild(this.slingshot_rope_right);
@@ -176,16 +180,12 @@ export class ParticleDynamics extends Container {
            {
                if (this.player.x > left && this.player.x < right && this.player.y > bottom && this.player.y < top && this.player_resetted)
                {
-                   this.pointcounter = this.pointcounter - 1;
-                   document.getElementById('pointoutput')!.textContent = this.pointcounter.toString();
+                   this.lifecounter = this.lifecounter - 1;
+                   document.getElementById('lifeoutput')!.textContent = this.lifecounter.toString();
                    this.player_resetted = false;
                }
-               
            }
         }
-
-
-
 
         if (this.player.x >= this.screenwidth && this.player_resetted) {
             this.pointcounter = this.pointcounter + 1;

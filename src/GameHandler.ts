@@ -2,6 +2,7 @@ import { Container, Text, Ticker } from "pixi.js";
 import { ParticleDynamicsDrawer } from "./ParticleDynamicsDrawer";
 import { CatMullRom } from "./CatMullRom";
 import { SceneSetup } from "./SceneSetup";
+import * as PIXI from "pixi.js";
 //@ts-ignore
 import { app } from "./Index";
 import { SceneHierarchy } from "./SceneHierarchy";
@@ -21,6 +22,9 @@ export class GameHandler extends Container {
     private particle_dynamics: ParticleDynamics;
     private keyboard_handler: KeyboardHandler;
     private voronoi: Voronoi;
+    private screen_width: number;
+    private screen_height: number;
+    private game_over: boolean;
 
     render_ticker: Ticker;
     animation_ticker: Ticker;
@@ -70,6 +74,11 @@ export class GameHandler extends Container {
 
         this.animation_ticker.autoStart = false;
 
+        this.screen_width = screenWidth;
+        this.screen_height = screenHeight;
+        this.game_over = false;
+
+        
     }
 
     private showRenderFPS(ticker: Ticker,) {
@@ -107,6 +116,8 @@ export class GameHandler extends Container {
         this.showRenderFPS(this.render_ticker);
     }
 
+    
+
     private animationUpdate = (): void => {
         this.showAnimationFPS(this.animation_ticker);
         //this.showPoints(this.animation_ticker);
@@ -116,6 +127,61 @@ export class GameHandler extends Container {
         this.scene_hierarchy.update(this.animation_ticker.deltaMS);
         this.particle_dynamics.update(this.animation_ticker.deltaMS);
         this.voronoi.update(this.animation_ticker.deltaMS);
+
+        if ( this.game_over)
+        {
+        this.animation_ticker.stop();
+        this.render_ticker.stop();
+        }
+
+        if (document.getElementById('lifeoutput')!.textContent == "0")
+        {
+
+            var style = {
+                font : 'bold italic 360px Arial',
+                fill : '#ff0000',
+                stroke : '#000000',
+                strokeThickness : 8,
+                dropShadow : true,
+                dropShadowColor : '#000000',
+                dropShadowAngle : Math.PI / 6,
+                dropShadowDistance : 6,
+                wordWrap : true,
+                wordWrapWidth : 440
+            };
+            
+        var richText = new PIXI.Text('Game Over! You are Dead!',style);
+        richText.anchor.set(0.5);
+        richText.x = this.screen_width / 2;
+        richText.y = this.screen_height / 2;
+        this.addChild(richText);
+        this.game_over = true
+    }
+
+    if (document.getElementById('pointoutput')!.textContent == "5")
+    {
+
+        var style = {
+            font : 'bold italic 360px Arial',
+            fill : '#ff0000',
+            stroke : '#000000',
+            strokeThickness : 8,
+            dropShadow : true,
+            dropShadowColor : '#000000',
+            dropShadowAngle : Math.PI / 6,
+            dropShadowDistance : 6,
+            wordWrap : true,
+            wordWrapWidth : 440
+        };
+        
+    var richText = new PIXI.Text('You did it! Congratualtions!',style);
+    richText.anchor.set(0.5);
+    richText.x = this.screen_width / 2;
+    richText.y = this.screen_height / 2;
+    this.addChild(richText);
+    this.game_over = true
+}
+
     }
 
 
