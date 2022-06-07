@@ -7,6 +7,7 @@
 		content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" />
 	<meta name="apple-mobile-web-app-capable" content="yes">
 
+
 	<style>
 		html,
 		body {
@@ -42,6 +43,7 @@
 			right: 0;
 			width: 100%;
 			background-color: #5c6269;
+			
 			display: block;
 			transition: all 0.3s;
 			border-radius: 1.7rem;
@@ -71,9 +73,9 @@
 	</style>
 
 </head>
-
 <body>
 	<noscript>Please enable JavaScript in your web browser to view this page.</noscript>
+	
 	<div style="display: flex; padding-left: 10px; padding-right: 10px;">
 		<div>
 			<span id="renderfps"></span> |
@@ -130,6 +132,14 @@
 					<input id="splinesspeed" type="checkbox">
 					<span class="roundbutton"></span>
 				</label>
+			</div>
+			<h3>Voronoi</h3>
+			<div style="display: flex; align-items: center;">
+				<span style="margin-top: 1px;">Distance Field</span>
+				<label class="toggle">
+					<input id="distancefield" type="checkbox">
+					<span class="roundbutton"></span>
+				</label>
 			</div><br>
 			<h3>Points and Lifes</h3>
 			<label for="pointlabel">Points:</label>
@@ -145,6 +155,6 @@
 		</div>
 		<div id="pixi-content"><canvas id="pixi-canvas" /></div>
 	</div>
+	
 </body>
-
 </html>
