@@ -151,40 +151,37 @@ export class ParticleDynamics extends Container {
             }
             else {
                 let new_pos = this.ODE(dt);
-                this.player.x += new_pos[0] * dt / 1000;
-                this.player.y += new_pos[1] * dt / 1000;
+                this.player.x += new_pos[0] * 1.5 * dt / 1000;
+                this.player.y += new_pos[1] * 1.5 * dt / 1000;
                 this.drawTrajectory();
             }
         }
 
-        let left =  0;
-        let right =  0;
+        let left = 0;
+        let right = 0;
         let top = 0;
         let bottom = 0;
 
-        for (let index = 0; index < EnemyHandler.getInstance().spriteCollection.length; index++)
-        {
-           let width = EnemyHandler.getInstance().spriteCollection.at(index)?.width;
-           let height = EnemyHandler.getInstance().spriteCollection.at(index)?.height;
-           let x = EnemyHandler.getInstance().spriteCollection.at(index)?.x;
-           let y = EnemyHandler.getInstance().spriteCollection.at(index)?.y;
+        for (let index = 0; index < EnemyHandler.getInstance().spriteCollection.length; index++) {
+            let width = EnemyHandler.getInstance().spriteCollection.at(index)?.width;
+            let height = EnemyHandler.getInstance().spriteCollection.at(index)?.height;
+            let x = EnemyHandler.getInstance().spriteCollection.at(index)?.x;
+            let y = EnemyHandler.getInstance().spriteCollection.at(index)?.y;
 
-           if (width != null && x != null && height != null && y != null) {
-            left =  x - (width / 2);
-            right =  x + (width/2);
-            top = y + (height / 2);
-            bottom = y - (height / 2);
-           }
+            if (width != null && x != null && height != null && y != null) {
+                left = x - (width / 2);
+                right = x + (width / 2);
+                top = y + (height / 2);
+                bottom = y - (height / 2);
+            }
 
-           if (left != null && right != null && top != null && bottom != null)
-           {
-               if (this.player.x > left && this.player.x < right && this.player.y > bottom && this.player.y < top && this.player_resetted)
-               {
-                   this.lifecounter = this.lifecounter - 1;
-                   document.getElementById('lifeoutput')!.textContent = this.lifecounter.toString();
-                   this.player_resetted = false;
-               }
-           }
+            if (left != null && right != null && top != null && bottom != null) {
+                if (this.player.x > left && this.player.x < right && this.player.y > bottom && this.player.y < top && this.player_resetted) {
+                    this.lifecounter = this.lifecounter - 1;
+                    document.getElementById('lifeoutput')!.textContent = this.lifecounter.toString();
+                    this.player_resetted = false;
+                }
+            }
         }
 
         if (this.player.x >= this.screenwidth && this.player_resetted) {
@@ -192,13 +189,12 @@ export class ParticleDynamics extends Container {
             document.getElementById('pointoutput')!.textContent = this.pointcounter.toString();
             this.player_resetted = false;
         }
-  
+
 
     }
 
-    removeTrajectory(){
-        for(let p of this.trajectory_points)
-        {
+    removeTrajectory() {
+        for (let p of this.trajectory_points) {
             this.removeChild(p);
         }
         this.trajectory_points = [];

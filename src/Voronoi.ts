@@ -124,7 +124,7 @@ export class Voronoi extends Container {
                     //var value = perlin.noise.simplex2(x / 100, y / 100);
                     //d += value;
 
-                    this.colorDistanceField(Math.abs(d), current_position);
+                    //this.colorDistanceField(Math.abs(d), current_position);
 
                     if (Math.floor(Math.abs(d)) == 0) {
                         this.drawPoint(current_position[0], current_position[1], 0x20edf7)
