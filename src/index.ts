@@ -5,7 +5,7 @@ export const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
 	resolution: window.devicePixelRatio || 1,
 	autoDensity: true,
-	backgroundColor: 0x20edf7,
+	backgroundColor: 0x20e6f7,
 	width: innerWidth * 0.85,
 	height: innerHeight,
 	autoStart: false
