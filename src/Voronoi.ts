@@ -34,7 +34,6 @@ export class Voronoi extends Container {
         this.circle.endFill();
         this.circle.interactive = true;
         this.addChild(this.circle);
-        //console.log(this.generateRandomColor());
         this.circle.on("click", this.breakCirclebyClick);
         EnemyHandler.getInstance().voronoi = this;
     }
@@ -130,7 +129,7 @@ export class Voronoi extends Container {
             let b = '#ffae00'; //16207623
             let norm_d = (d - 1) / (20 - 1);
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
-            console.log(c);
+           
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
@@ -138,7 +137,7 @@ export class Voronoi extends Container {
             let a = '#ffae00'; //8193285
             let b = '#ffff00'; //16207623
             let norm_d = (d - 20) / (40 - 20);
-            console.log(norm_d);
+           
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
@@ -147,7 +146,7 @@ export class Voronoi extends Container {
             let a = '#ffff00'; //8193285
             let b = '#9dff00'; //16207623
             let norm_d = (d - 40) / (60 - 40);
-            console.log(norm_d);
+           
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
@@ -156,7 +155,7 @@ export class Voronoi extends Container {
             let a = '#9dff00'; //8193285
             let b = '#1aff00'; //16207623
             let norm_d = (d - 60) / (80 - 60);
-            console.log(norm_d);
+            
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
@@ -165,7 +164,7 @@ export class Voronoi extends Container {
             let a = '#1aff00'; //8193285
             let b = '#00ffae'; //16207623
             let norm_d = (d - 80) / (100 - 80);
-            console.log(norm_d);
+           
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
@@ -174,7 +173,7 @@ export class Voronoi extends Container {
             let a = '#00ffae'; //8193285
             let b = '#00bbff'; //16207623
             let norm_d = (d - 100) / (150 - 100);
-            console.log(norm_d);
+          
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
@@ -183,7 +182,7 @@ export class Voronoi extends Container {
             let a = '#00bbff'; //8193285
             let b = '#0040ff'; //16207623
             let norm_d = (d - 100) / (150 - 100);
-            console.log(norm_d);
+        
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)

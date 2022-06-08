@@ -41,8 +41,8 @@ export class HierarchyEnemy extends Container {
         this.local_position_ = vec2.fromValues(-50,-50);
     }
 
-    //@ts-ignore
-    updateMatrix(angle: number, parent_transformation_matrix: Matrix, parent_angle: number) {
+    //updated the matrices
+    updateMatrix(angle: number, parent_transformation_matrix: mat3, parent_angle: number) {
         mat3.fromRotation(this.local_rotation_matrix, angle);
         mat3.multiply(this.local_transformation_matrix, this.local_translation_matrix, this.local_rotation_matrix);
         mat3.multiply(this.global_transformation_matrix_, parent_transformation_matrix, this.local_transformation_matrix);

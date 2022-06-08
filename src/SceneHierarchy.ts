@@ -49,9 +49,9 @@ export class SceneHierarchy extends Container {
         this.rotation_speed_ = 0.5;
         this.rotation_angle_ = 0;
         this.count_ = 0;
-
-
     }
+
+    //increases the radius (local position) enemys fly around the black hole
     increaseRadius(dt: number, _val: number) {
         this.child1_.local_position_[0] += _val * dt / 1000;
         this.child1_.local_position_[1] += _val * dt / 1000;
@@ -62,6 +62,7 @@ export class SceneHierarchy extends Container {
         mat3.fromTranslation(this.child11_.local_translation_matrix, this.child11_.local_position_);
     }
 
+    //reduce the radius (local position) enemys fly around the black hole
     decreaseRadius(dt: number) {
         this.child1_.local_position_[0] -= 100 * dt / 1000;
             this.child1_.local_position_[1] -= 100 * dt / 1000;
