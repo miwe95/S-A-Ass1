@@ -1,5 +1,7 @@
 import { vec2 } from "gl-matrix";
 import { Container, Graphics, InteractionEvent } from "pixi.js";
+import { EnemyHandler } from "./EnemyHandler";
+
 
 //@ts-ignore
 var perlin = require("./perlin.js");
@@ -13,7 +15,7 @@ export class Voronoi extends Container {
     private radius: number;
     show_distance_field: boolean;
     apply_noise: boolean;
- 
+
 
 
     constructor(_screenWidth: number, _screenHeight: number) {
@@ -23,7 +25,7 @@ export class Voronoi extends Container {
         this.radius = 100;
         this.show_distance_field = false;
         this.apply_noise = false;
-     
+
 
         this.cells = new Map();
         this.impact_point = vec2.fromValues(0, 0);
@@ -34,12 +36,17 @@ export class Voronoi extends Container {
         this.circle.interactive = true;
         this.addChild(this.circle);
         //console.log(this.generateRandomColor());
-        this.circle.on("click", this.breakCircle);
-
-
+        this.circle.on("click", this.breakCirclebyClick);
+        EnemyHandler.getInstance().voronoi = this;
     }
 
-    breakCircle = (_e: InteractionEvent) => {
+    breakCircleByPlayer(impact_point: vec2) {
+        this.impact_point = vec2.fromValues(impact_point[0], impact_point[1]);
+        this.calculateSeedPoints();
+        this.calculateCells();
+    }
+
+    breakCirclebyClick = (_e: InteractionEvent) => {
 
         //console.log(this.impact_point);
         this.impact_point = vec2.fromValues(_e.data.global.x, _e.data.global.y);
@@ -58,7 +65,7 @@ export class Voronoi extends Container {
     }
 
     private drawPoint(x: number, y: number, color: number, alpha: number = 1) {
-        this.circle.beginFill(color , alpha);
+        this.circle.beginFill(color, alpha);
         this.circle.drawCircle(x, y, 1);
         this.circle.endFill();
     }
@@ -70,7 +77,7 @@ export class Voronoi extends Container {
             if (vec2.distance(cell_center, current_position) < vec2.distance(current_position, closest_cell_center)) {
                 second_closest_cell_center = closest_cell_center;
                 closest_cell_center = cell_center;
-                
+
             }
         }
         return [closest_cell_center, second_closest_cell_center];
@@ -152,9 +159,9 @@ export class Voronoi extends Container {
     //@ts-ignore
     private colorDistanceField(d: number, current_position: vec2) {
         //this.drawPoint(current_position[0], current_position[1], 0xf70505 + Math.abs(d) * 2000);
-       
+
         if (d > 1 && d <= 20) {
-            let a = '#ff0000' ; //8193285
+            let a = '#ff0000'; //8193285
             let b = '#ffae00'; //16207623
             let norm_d = (d - 1) / (20 - 1);
             let c = this.lerpColor(a.toString(), b.toString(), norm_d);
@@ -163,7 +170,7 @@ export class Voronoi extends Container {
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
         else if (d > 20 && d <= 40) {
-            let a = '#ffae00' ; //8193285
+            let a = '#ffae00'; //8193285
             let b = '#ffff00'; //16207623
             let norm_d = (d - 20) / (40 - 20);
             console.log(norm_d);
@@ -172,7 +179,7 @@ export class Voronoi extends Container {
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
         else if (d > 40 && d <= 60) {
-            let a = '#ffff00' ; //8193285
+            let a = '#ffff00'; //8193285
             let b = '#9dff00'; //16207623
             let norm_d = (d - 40) / (60 - 40);
             console.log(norm_d);
@@ -181,7 +188,7 @@ export class Voronoi extends Container {
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
         else if (d > 60 && d <= 80) {
-            let a = '#9dff00' ; //8193285
+            let a = '#9dff00'; //8193285
             let b = '#1aff00'; //16207623
             let norm_d = (d - 60) / (80 - 60);
             console.log(norm_d);
@@ -190,7 +197,7 @@ export class Voronoi extends Container {
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
         else if (d > 80 && d <= 100) {
-            let a = '#1aff00' ; //8193285
+            let a = '#1aff00'; //8193285
             let b = '#00ffae'; //16207623
             let norm_d = (d - 80) / (100 - 80);
             console.log(norm_d);
@@ -199,7 +206,7 @@ export class Voronoi extends Container {
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
         else if (d > 100 && d <= 150) {
-            let a = '#00ffae' ; //8193285
+            let a = '#00ffae'; //8193285
             let b = '#00bbff'; //16207623
             let norm_d = (d - 100) / (150 - 100);
             console.log(norm_d);
@@ -208,7 +215,7 @@ export class Voronoi extends Container {
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
         else if (d > 150 && d <= 200) {
-            let a = '#00bbff' ; //8193285
+            let a = '#00bbff'; //8193285
             let b = '#0040ff'; //16207623
             let norm_d = (d - 100) / (150 - 100);
             console.log(norm_d);
@@ -216,8 +223,7 @@ export class Voronoi extends Container {
             //@ts-ignore
             this.drawPoint(current_position[0], current_position[1], c as number, 1)
         }
-        else
-        {
+        else {
             this.drawPoint(current_position[0], current_position[1], 0x20e6f7, 1)
         }
 
@@ -230,7 +236,7 @@ export class Voronoi extends Container {
 
     }
 
-    private lerpColor(a:string, b:string, amount:number) { 
+    private lerpColor(a: string, b: string, amount: number) {
 
         var ah = +a.replace('#', '0x'),
             ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
@@ -239,7 +245,7 @@ export class Voronoi extends Container {
             rr = ar + amount * (br - ar),
             rg = ag + amount * (bg - ag),
             rb = ab + amount * (bb - ab);
-    
+
         return '0x' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     }
 }

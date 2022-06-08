@@ -52,15 +52,16 @@ export class GameHandler extends Container {
 
         this.scene_hierarchy = new SceneHierarchy(screenWidth, screenHeight);
         this.addChild(this.scene_hierarchy);
-
+        
+        this.voronoi = new Voronoi(screenWidth, screenHeight);
+        this.addChild(this.voronoi);
+        
         this.particle_dynamics_drawer = new ParticleDynamicsDrawer(screenWidth, screenHeight);
         this.addChild(this.particle_dynamics_drawer);
 
         this.particle_dynamics = new ParticleDynamics(screenWidth, screenHeight);
         this.addChild(this.particle_dynamics);
 
-        this.voronoi = new Voronoi(screenWidth, screenHeight);
-        this.addChild(this.voronoi);
 
         this.keyboard_handler = new KeyboardHandler(this, this.particle_dynamics_drawer, this.enemy_movement_1, this.enemy_movement_2, this.scene_hierarchy, this.particle_dynamics, this.voronoi);
         this.addChild(this.keyboard_handler);

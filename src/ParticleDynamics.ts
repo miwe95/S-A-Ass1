@@ -29,9 +29,11 @@ export class ParticleDynamics extends Container {
     private trajectory_points: Array<Graphics>;
     private pointcounter: number;
     private lifecounter: number;
+    private has_hit_voronoi: boolean;
 
     constructor(screenWidth: number, screenHeight: number) {
         super();
+        this.has_hit_voronoi = false;
         this.euler = false;
         this.trajectory = false;
         this.player_resetted = true;
@@ -137,6 +139,7 @@ export class ParticleDynamics extends Container {
     }
 
     resetPlayerVars() {
+        this.has_hit_voronoi = false;
         this.gravity = false;
         this.move_ = false;
         this.player_resetted = true;
@@ -151,8 +154,8 @@ export class ParticleDynamics extends Container {
             }
             else {
                 let new_pos = this.ODE(dt);
-                this.player.x += new_pos[0] * 1.5 * dt / 1000;
-                this.player.y += new_pos[1] * 1.5 * dt / 1000;
+                this.player.x += new_pos[0] * 2 * dt / 1000;
+                this.player.y += new_pos[1] * 2 * dt / 1000;
                 this.drawTrajectory();
             }
         }
@@ -181,6 +184,17 @@ export class ParticleDynamics extends Container {
                     document.getElementById('lifeoutput')!.textContent = this.lifecounter.toString();
                     this.player_resetted = false;
                 }
+            }
+        }
+        if(!this.has_hit_voronoi)
+        {   
+            console.log("hit");
+            let player_pos = vec2.fromValues(this.player.x, this.player.y);
+            let voronoi_pos = vec2.fromValues(this.screenwidth * 0.5, this.screenheigth * 0.1);
+            if (vec2.distance(player_pos, voronoi_pos) < 100) {
+                this.has_hit_voronoi=true;
+                EnemyHandler.getInstance().voronoi.breakCircleByPlayer(player_pos);
+                
             }
         }
 
