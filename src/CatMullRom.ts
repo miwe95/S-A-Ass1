@@ -28,6 +28,7 @@ export class CatMullRom extends Container {
     increase_speed: boolean;
 
 
+
     constructor(_screenWidth: number, _screenHeight: number, control_points_position: vec2[], png: string) {
         super();
 
@@ -223,9 +224,8 @@ export class CatMullRom extends Container {
 
         if (table_entry.segment == 0) {
 
-            this.distance += this.ease(this.distance, 0.05, 0.15) * this.speed * _delta / 1000;
+            this.distance += this.ease(this.distance, 0.05, 0.20) * (this.speed * 5) * _delta / 1000;
             output = keys.reduce((prev, curr) => Math.abs(curr - this.distance) < Math.abs(prev - this.distance) ? curr : prev);
-            table_entry = this.lookup_table.get(output) as TableEntrys;
         }
         else {
             this.distance += this.speed * _delta / 1000;
@@ -260,11 +260,6 @@ export class CatMullRom extends Container {
         if (t < k1) {
             s = k1 * (2 / Math.PI) * (Math.sin((t / k1) * Math.PI / 2 * Math.PI / 2) + 1);
             //console.log("slow:");
-        }
-        else if (t < k2) {
-
-            s = (2 * k1 / Math.PI + t * k1);
-            //console.log("fast:" );S
         }
         else {
             s = 2 * k1 / Math.PI + k2 * k1 + ((1 - k2) * (2 / Math.PI)) *
