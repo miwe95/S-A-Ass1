@@ -148,18 +148,6 @@ export class Voronoi extends Container {
                 this.drawPoint(this.impact_point[0] + x, this.impact_point[1] + y, 0x999999);
             }
         }
-
-        //100px around center
-        // for (let i = 0; i < 10; i++) {
-        //     let u = Math.random();
-        //     let v = Math.random();
-        //     let w = 100 * Math.sqrt(u);
-        //     let t = 2 * Math.PI * v;
-        //     let x = w * Math.cos(t)
-        //     let y = w * Math.sin(t)
-        //     this.cells.set(vec2.fromValues(point_center[0] + x, point_center[1] + y), []);
-        //     this.drawPoint(point_center[0] + x, point_center[1] + y);
-        // }
     }
     //@ts-ignore
     private colorDistanceField(d: number, current_position: vec2) {
