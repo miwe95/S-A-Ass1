@@ -15,7 +15,7 @@ export class Voronoi extends Container {
     private radius: number;
     show_distance_field: boolean;
     apply_noise: boolean;
-
+    hit: boolean;
 
 
     constructor(_screenWidth: number, _screenHeight: number) {
@@ -25,6 +25,7 @@ export class Voronoi extends Container {
         this.radius = 100;
         this.show_distance_field = false;
         this.apply_noise = false;
+        this.hit = false;
 
 
         this.cells = new Map();
@@ -44,6 +45,7 @@ export class Voronoi extends Container {
         this.impact_point = vec2.fromValues(impact_point[0], impact_point[1]);
         this.calculateSeedPoints();
         this.calculateCells();
+        this.hit = true;
     }
 
     breakCirclebyClick = (_e: InteractionEvent) => {
@@ -55,7 +57,8 @@ export class Voronoi extends Container {
     }
 
     update(_dt: number) {
-        //this.circle.y += 100 * _dt / 1000;
+        if(this.hit)
+            this.circle.x += 100 * _dt / 1000;
     }
 
     //@ts-ignore
