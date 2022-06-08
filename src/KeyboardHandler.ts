@@ -19,6 +19,7 @@ export class KeyboardHandler extends Container {
     private show_distance_field: HTMLElement;
     private splines: HTMLElement;
     private splines_speed: HTMLElement;
+    private apply_noise: HTMLElement;
     private particle_dynamics_method_toggle: boolean;
     private particle_dynamics_trajectory_toggle: boolean;
     private splines_toggle: boolean;
@@ -72,6 +73,13 @@ export class KeyboardHandler extends Container {
 
         this.show_distance_field = document.getElementById("distancefield")!;
         this.show_distance_field.addEventListener("change", this.handleShowDistancefield)
+
+        this.apply_noise = document.getElementById("applynoise")!;
+        this.apply_noise.addEventListener("change", this.handleApplyNoise)
+    }
+
+    private handleApplyNoise = (): void => {
+        this.voronoi.apply_noise = !this.voronoi.apply_noise;
     }
 
     private handleShowDistancefield = (): void => {

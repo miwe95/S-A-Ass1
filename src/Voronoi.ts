@@ -12,6 +12,7 @@ export class Voronoi extends Container {
     private impact_point: vec2;
     private radius: number;
     show_distance_field:boolean;
+    apply_noise:boolean;
 
 
     constructor(_screenWidth: number, _screenHeight: number) {
@@ -20,6 +21,7 @@ export class Voronoi extends Container {
         this.screen_height = _screenHeight;
         this.radius = 100;
         this.show_distance_field = false;
+        this.apply_noise = false;
 
         this.cells = new Map();
         this.impact_point = vec2.fromValues(0, 0);
@@ -93,7 +95,7 @@ export class Voronoi extends Container {
     private calculateCells() {
         let point_center = vec2.fromValues(Math.round(this.screen_width * 0.5), Math.round(this.screen_height * 0.1));
         let current_position: vec2 = vec2.fromValues(0, 0);
-        //console.log(perlin.noise.seed(Math.random()));
+        perlin.noise.seed(Math.random());
     
         for (let y = point_center[1] - this.radius; y < point_center[1] + this.radius; y++)
             for (let x = point_center[0] - this.radius; x < point_center[0] + this.radius; x++) {
@@ -123,8 +125,11 @@ export class Voronoi extends Container {
                     pb_pa_div[1] = (pb_pa[1] / pb_pa_abs);
 
                     let d: number = vec2.dot(x_m, pb_pa_div);
-                    //var value = perlin.noise.simplex2(x / 100, y / 100);
-                    //d += value;
+                    //@ts-ignore
+
+                    var nooise_value = perlin.noise.simplex2(x / 100, y / 100);
+                    this.apply_noise ? d += Math.abs(nooise_value * 2) : d;
+                    //console.log(value);
 
                     if(this.show_distance_field)
                     {
