@@ -188,7 +188,7 @@ export class ParticleDynamics extends Container {
         }
         if(!this.has_hit_voronoi)
         {   
-            console.log("hit");
+            
             let player_pos = vec2.fromValues(this.player.x, this.player.y);
             let voronoi_pos = vec2.fromValues(this.screenwidth * 0.5, this.screenheigth * 0.1);
             if (vec2.distance(player_pos, voronoi_pos) < 100) {
