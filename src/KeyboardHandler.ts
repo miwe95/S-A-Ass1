@@ -1,5 +1,5 @@
 import { Container, Ticker } from "pixi.js";
-import { CatMullRom } from "./CatMullRom";
+import { CatMullRom } from "./PathInterpol";
 import { GameHandler } from "./GameHandler";
 import { ParticleDynamicsDrawer } from "./ParticleDynamicsDrawer";
 import { ParticleDynamics } from "./ParticleDynamics"

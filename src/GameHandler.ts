@@ -1,6 +1,6 @@
 import { Container, Text, Ticker } from "pixi.js";
 import { ParticleDynamicsDrawer } from "./ParticleDynamicsDrawer";
-import { CatMullRom } from "./CatMullRom";
+import { CatMullRom } from "./PathInterpol";
 import { SceneSetup } from "./SceneSetup";
 import * as PIXI from "pixi.js";
 //@ts-ignore
