@@ -84,6 +84,7 @@ export class ParticleDynamics extends Container {
         if (this.euler) {
             //euler
             let force_vec: vec2 = this.getForce(this.player.x, this.player.y);
+            vec2.scale(force_vec, force_vec, dt);
             vec2.add(this.player_velocity, this.player_velocity, force_vec);
             return vec2.fromValues((this.player_velocity[0]), (this.player_velocity[1]));
         }
@@ -134,7 +135,7 @@ export class ParticleDynamics extends Container {
 
         }
         else {
-            return vec2.fromValues(0, this.euler ? 9.81 : 0.981);
+            return vec2.fromValues(0, 0.981);
         }
     }
 
@@ -154,8 +155,8 @@ export class ParticleDynamics extends Container {
             }
             else {
                 let new_pos = this.ODE(dt);
-                this.player.x += new_pos[0] * 2 * dt / 1000;
-                this.player.y += new_pos[1] * 2 * dt / 1000;
+                this.player.x += new_pos[0] * 1.5 * dt / 1000;
+                this.player.y += new_pos[1] * 1.5 * dt / 1000;
                 this.drawTrajectory();
             }
         }
@@ -186,15 +187,14 @@ export class ParticleDynamics extends Container {
                 }
             }
         }
-        if(!this.has_hit_voronoi)
-        {   
-            
+        if (!this.has_hit_voronoi) {
+
             let player_pos = vec2.fromValues(this.player.x, this.player.y);
             let voronoi_pos = vec2.fromValues(this.screenwidth * 0.5, this.screenheigth * 0.1);
             if (vec2.distance(player_pos, voronoi_pos) < 100) {
-                this.has_hit_voronoi=true;
+                this.has_hit_voronoi = true;
                 EnemyHandler.getInstance().voronoi.breakCircleByPlayer(player_pos);
-                
+
             }
         }
 
@@ -238,8 +238,8 @@ export class ParticleDynamics extends Container {
         this.clearListenerPlayerFire(_e);
         let slingshot_mid: vec2 = vec2.fromValues(this.slingshot.x + 5, this.slingshot.y - 55);
         let player_pos: vec2 = vec2.fromValues(this.player.x, this.player.y);
-        this.drawDebugCircle(slingshot_mid[0], slingshot_mid[1]);
-        this.drawDebugCircle(player_pos[0], player_pos[1]);
+        //this.drawDebugCircle(slingshot_mid[0], slingshot_mid[1]);
+        //this.drawDebugCircle(player_pos[0], player_pos[1]);
 
         let res: vec2 = vec2.fromValues(0, 0);
         vec2.sub(res, slingshot_mid, player_pos);
@@ -257,9 +257,15 @@ export class ParticleDynamics extends Container {
         }
         console.log("start velocity x: " + this.player_velocity[0]);
         console.log("start velocity y: " + this.player_velocity[1]);
-        this.launching_angle = angle;
-        this.move_ = true;
+        if (this.player.x >= slingshot_mid[0]) {
+            this.player.x = 100;
+            this.player.y = this.screenheigth - 50;
 
+        }
+        else {
+            this.launching_angle = angle;
+            this.move_ = true;
+        }
     }
 
     //called to clear drawings when player fired
